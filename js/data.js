@@ -214,7 +214,8 @@ const GUIDES = [
       "List each expense with date, amount, category and attach a scanned receipt.",
       "Submit the form and receipts to Finance within 30 days of the expense.",
       "Approved claims are reimbursed in the next payroll cycle.",
-      "After your client's supervisor has signed off your claim form, log in to the Infotech Claims System to apply for the claim and upload the approved, signed documents."
+      "After your client's supervisor has signed off your claim form, log in to the Infotech Claims System to apply for the claim and upload the approved, signed documents.",
+      "Claims submitted more than 2 months after the expense date will not be accepted or processed."
     ],
     tip: "Claims submitted without receipts may be delayed or rejected — always attach proof of purchase."
   },
