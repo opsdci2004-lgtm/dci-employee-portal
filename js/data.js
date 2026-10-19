@@ -42,12 +42,12 @@ const TEMPLATES = [
   },
   {
     id: "onboarding-checklist",
-    title: "Onboarding Checklist",
-    description: "A step-by-step checklist for new contract employees during their first two weeks.",
+    title: "New Employee Onboarding Checklist (First Two Weeks)",
+    description: "Day-by-day checklist for new contract employees and DCI HR — before Day 1 through the Week 2 review.",
     category: "HR",
     fileType: "PDF",
     icon: "✅",
-    file: "assets/docs/onboarding-checklist.txt"
+    file: "assets/docs/onboarding-checklist.pdf"
   },
   {
     id: "nda-acknowledgement",
@@ -240,6 +240,21 @@ const GUIDES = [
       "Browse the \"Highest Rated Articles\" section for commonly needed how-tos, or search directly for the leave topic you need."
     ],
     tip: "Infotech's own Help Portal is kept up to date directly by Infotech, so it's the most current source for exact, step-by-step leave-module instructions. If you still can't find what you need, ask your DCI reporting manager or HR contact."
+  },
+  {
+    id: "onboarding-first-two-weeks",
+    title: "Your First Two Weeks: Onboarding Checklist",
+    steps: [
+      "<strong>Before Day 1:</strong> sign and return your employment agreement, read your employment terms (salary, allowances, hours, leave), submit onboarding documents through DCI's secure channel, and confirm your reporting location, time and dress code.",
+      "<strong>Day 1 — Reporting:</strong> report to your assigned client location, meet your supervisor and team, complete security registration/pass application, attend workplace orientation and safety briefing, and confirm your successful first day with DCI HR.",
+      "<strong>Day 2 — Employment admin:</strong> confirm your contract and written employment terms, verify payroll and emergency contact details, understand your leave/absence-reporting process, and review DCI's Code of Business Conduct and Ethics.",
+      "<strong>Day 3 — IT &amp; security:</strong> receive your equipment and activate system accounts, complete MFA and cybersecurity training, and learn the approved way to store, transfer and access client information.",
+      "<strong>Day 4 — Job scope:</strong> review your job description and expected deliverables with your supervisor, learn key processes/tools, and know how to escalate job-related problems.",
+      "<strong>Day 5 — Week 1 review:</strong> review progress and outstanding issues with your supervisor, confirm access/equipment/training are complete, and send DCI HR a short first-week status update.",
+      "<strong>Days 6–8 — Settling in:</strong> take on assigned tasks with appropriate supervision, join team meetings, and keep your work within the agreed job scope, security and safety requirements.",
+      "<strong>Days 9–10 — Final review:</strong> get feedback from your supervisor on strengths and areas to develop, confirm deliverables going forward, raise any unresolved issues with DCI HR, and complete your two-week onboarding check-in."
+    ],
+    tip: "Throughout onboarding: tell both your client supervisor and DCI HR promptly if you can't report for work, apply for leave and submit MCs through the proper channel, follow the Code of Business Conduct and client safety rules, and inform DCI HR before agreeing to any significant change in duties, hours, location or contract terms. The full day-by-day checklist (including DCI HR's own follow-up checklist) is downloadable from the Company Templates page."
   }
 ];
 
