@@ -124,6 +124,10 @@ function rowCardHtml(row) {
             <select data-field="leaveType" data-row="${row.id}">
               <option value="annual" ${row.leaveType === "annual" ? "selected" : ""}>Annual Leave</option>
               <option value="medical" ${row.leaveType === "medical" ? "selected" : ""}>Medical Leave</option>
+              <option value="hospitalisation" ${row.leaveType === "hospitalisation" ? "selected" : ""}>Hospitalisation Leave</option>
+              <option value="childcare" ${row.leaveType === "childcare" ? "selected" : ""}>Childcare Leave (GPCL/ECL)</option>
+              <option value="ns" ${row.leaveType === "ns" ? "selected" : ""}>NS / Reservist Leave</option>
+              <option value="compassionate" ${row.leaveType === "compassionate" ? "selected" : ""}>Compassionate Leave</option>
               <option value="unpaid" ${row.leaveType === "unpaid" ? "selected" : ""}>Unpaid Leave</option>
             </select>
           </div>
@@ -267,7 +271,15 @@ function escapeHtml(str) {
 }
 
 function buildLeaveFormHtml({ staffName, department, monthLabel, rows, summary }) {
-  const typeLabel = { annual: "Annual Leave", medical: "Medical Leave", unpaid: "Unpaid Leave" };
+  const typeLabel = {
+    annual: "Annual Leave",
+    medical: "Medical Leave",
+    hospitalisation: "Hospitalisation Leave",
+    childcare: "Childcare Leave (GPCL/ECL)",
+    ns: "NS / Reservist Leave",
+    compassionate: "Compassionate Leave",
+    unpaid: "Unpaid Leave"
+  };
 
   const tableRows = rows
     .map((r) => {
@@ -367,6 +379,7 @@ function buildLeaveFormHtml({ staffName, department, monthLabel, rows, summary }
       <div>After your leave has been approved, please apply the same in Infotech – Leave portal</div>
       <div>For Medical Leave, please upload Medical Certificate in Infotech – Leave portal</div>
       <div>For Medical Claim, please upload Medical Receipt in Infotech – Claims portal</div>
+      <div>For Childcare Leave (GPCL/ECL), also complete the official Form GPCL1 (available on the Company Templates page) and submit it to DCI HR with your child's supporting documents</div>
     </div>
 
     <div class="lf-footer">

@@ -59,6 +59,15 @@ const TEMPLATES = [
     file: "assets/docs/onboarding-checklist.pdf"
   },
   {
+    id: "gpcl1-childcare-leave",
+    title: "Government-Paid Childcare Leave (GPCL/ECL) Declaration Form",
+    description: "Official MSF Form GPCL1 — declare eligibility for Childcare Leave or Extended Childcare Leave before taking it. Submit to DCI HR with your child's birth/citizenship documents; do not send this to MSF.",
+    category: "HR",
+    fileType: "PDF",
+    icon: "👨‍👩‍👧",
+    file: "assets/docs/gpcl1-childcare-leave-declaration.pdf"
+  },
+  {
     id: "nda-acknowledgement",
     title: "NDA Acknowledgement",
     description: "Non-disclosure agreement acknowledgement required for all contract staff.",
