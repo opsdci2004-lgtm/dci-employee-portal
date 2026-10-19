@@ -73,14 +73,20 @@ const TEMPLATES = [
 const POLICIES = [
   {
     id: "code-of-conduct",
-    title: "Code of Conduct",
+    title: "Code of Business Conduct & Ethics",
     category: "Workplace",
-    updated: "2026-01-15",
-    summary: "Expected standards of professional behaviour, integrity and respect in the workplace.",
+    updated: "2026-10-01",
+    summary: "The standard of conduct DCI expects everywhere we work — our offices, remote work and client sites.",
     body: [
-      "All DCI Consultants staff, including contract employees, are expected to act with honesty, integrity and respect toward colleagues, clients and partners at all times.",
-      "Harassment, discrimination or bullying of any kind will not be tolerated and should be reported immediately to HR.",
-      "[PLACEHOLDER] Insert full code of conduct document reference and escalation contact."
+      "We keep this Code in plain, everyday language on purpose — a policy only works if people can actually understand it, not just sign it.",
+      "It applies to everyone acting for DCI Consultants: employees, contract and assigned staff, recruiters, finance staff, and professionals placed at a client site. Contractors, agents and business partners representing DCI are expected to meet the same standard.",
+      "<strong>Two organisations, one standard.</strong> DCI remains your employer of record and handles pay, CPF, leave and contractual matters. A client may direct your day-to-day work and set site-specific rules, but cannot change your DCI salary, contract or work-pass terms on their own. If a client instruction and DCI's standards ever conflict, raise it with DCI before proceeding.",
+      "<strong>Our five values:</strong> Integrity (tell the truth, keep accurate records), Respect (treat colleagues, candidates and clients with dignity), Care (put safety and well-being first), Security (protect client systems, data and property) and Service (deliver dependable work and honour commitments).",
+      "<strong>What it covers:</strong> fair treatment and workplace safety; professional conduct at client sites; confidentiality, data protection and safe use of AI/online tools; zero tolerance for bribery, kickbacks and falsified records (timesheets, invoices, CVs); responsible public conduct and social media use; and how to speak up if something looks wrong.",
+      "A quick test for any grey area: Is it lawful? Is it safe? Would DCI and the client both agree it's authorised? Are the records accurate? Would you be comfortable explaining the decision to your manager?",
+      "Suspected breaches — of this Code, a policy, or the law — can be reported through DCI's confidential reporting channel. Reports may be made without giving your name where possible, are handled discreetly, and anyone reporting in good faith is protected from retaliation.",
+      "[PLACEHOLDER] Confirm the named reporting contact, escalation channel and effective/next-review dates before this Code is issued to staff.",
+      "<a href=\"assets/docs/code-of-business-conduct-and-ethics.txt\" download>📄 Download the full Code of Business Conduct &amp; Ethics</a>"
     ]
   },
   {

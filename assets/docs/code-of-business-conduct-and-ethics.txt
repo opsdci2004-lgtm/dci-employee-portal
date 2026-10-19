@@ -1,0 +1,13 @@
+DCI CONSULTANTS — CODE OF BUSINESS CONDUCT & ETHICS [PLACEHOLDER FILE]
+
+This is a placeholder for the real Code of Business Conduct & Ethics
+(.pdf). Replace this file with the finalised document — once management
+has filled in the document owner, approver, effective date, reporting
+contact and next review date — and update the link in the "Code of
+Business Conduct & Ethics" policy entry in js/data.js if the filename
+changes.
+
+Covers: fair treatment & workplace safety, conduct at client sites,
+confidentiality & cyber security (including AI tool use), anti-bribery &
+accurate records, public conduct & social media, and how to report
+concerns.
