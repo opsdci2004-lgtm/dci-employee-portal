@@ -311,7 +311,7 @@ function buildLeaveFormHtml({ staffName, department, supervisorName, monthLabel,
 
     <div class="lf-meta">
       <div><span class="lf-label">Name of Staff:</span> ${escapeHtml(staffName || "")}</div>
-      <div><span class="lf-label">Department:</span> ${escapeHtml(department || "")}</div>
+      <div><span class="lf-label">Client Company / Department:</span> ${escapeHtml(department || "")}</div>
     </div>
     <div class="lf-month">Leave Applied for the Month of: ${monthLabel}</div>
 

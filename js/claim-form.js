@@ -237,7 +237,7 @@ function buildClaimFormHtml({ staffName, site, supervisorName, periodLabel, rows
 
     <div class="lf-meta">
       <div><span class="lf-label">Period (MM/YYYY):</span> ${escapeHtmlClaim(periodLabel)}</div>
-      <div><span class="lf-label">SITE:</span> ${escapeHtmlClaim(site)}</div>
+      <div><span class="lf-label">Client Company / Department:</span> ${escapeHtmlClaim(site)}</div>
     </div>
 
     <table>
