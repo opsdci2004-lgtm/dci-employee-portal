@@ -34,11 +34,20 @@ const TEMPLATES = [
   {
     id: "expense-claim",
     title: "Company Expense Claim Form",
-    description: "Approved expense/mileage claim form — get it signed by your supervisor, then email it with receipts and submit the claim in Infotech.",
+    description: "Approved expense claim form — get it signed by your supervisor, then email it with receipts and submit the claim in Infotech.",
     category: "Finance & Payroll",
     fileType: "DOCX",
     icon: "💳",
     file: "assets/docs/company-expense-claim-form.docx"
+  },
+  {
+    id: "mileage-claim",
+    title: "Monthly Mileage Claim Form",
+    description: "For staff using their own car or motorcycle on approved business travel only — S$0.25/km, capped at S$250 (1,000 km) per employee per month. Distance and claim amount calculate automatically.",
+    category: "Finance & Payroll",
+    fileType: "XLSX",
+    icon: "🏍️",
+    file: "assets/docs/mileage-claim-form.xlsx"
   },
   {
     id: "onboarding-checklist",
