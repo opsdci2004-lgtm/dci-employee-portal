@@ -126,7 +126,8 @@ const POLICIES = [
       "Leave requests must be submitted at least 3 business days in advance using the Leave Application Form on the Templates page, except for emergency or sick leave.",
       "Unplanned absences must be reported to your direct manager before 9:00 AM local time.",
       "Entitlement days can vary by contract type (short-term vs long-term contractors) — contact sale@dci-consultants.com or Ms Ong Bee Hoon (9176 8147 / 9879 8085) for your specific terms.",
-      "After your supervisor has approved and signed the leave form, please proceed to log in to the Infotech Leave System to apply online and upload the approved, signed leave form."
+      "After your supervisor has approved and signed the leave form, please proceed to log in to the Infotech Leave System to apply online and upload the approved, signed leave form.",
+      "There is no leave encashment — staff who resign must clear their annual leave before their last day. Carry-forward of unused leave to the following contract year varies by client; please check with HR for your specific terms."
     ]
   },
   {
