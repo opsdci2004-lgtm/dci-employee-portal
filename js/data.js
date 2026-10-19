@@ -102,6 +102,24 @@ const POLICIES = [
     ]
   },
   {
+    id: "statutory-leave-sg",
+    title: "Leave Policy Guideline (Singapore) — Parental, NS & Medical Leave",
+    category: "HR",
+    updated: "2026-10-04",
+    summary: "Maternity, paternity, Shared Parental Leave, National Service and medical/hospitalisation leave entitlements under Singapore law.",
+    body: [
+      "Sets out how the company grants maternity, paternity, Shared Parental Leave (SPL), National Service (NS) and medical/hospitalisation leave in line with the Employment Act, the Child Development Co-Savings Act and the Enlistment Act. Where our policy is more generous than the statutory minimum, the more generous term applies. No employee is dismissed, demoted or disadvantaged for taking leave they're entitled to, and medical/family information is shared only with HR and the approving manager on a need-to-know basis.",
+      "<strong>Maternity leave:</strong> 16 weeks paid for a Singapore citizen child (12 weeks if not a citizen), for mothers legally married to the child's father with at least 3 continuous months of service. The company pays salary during leave and claims reimbursement from the Government, capped at S$10,000 per 4 weeks (inclusive of CPF). Inform HR as early as possible with the expected delivery date; you return to the same role or an equivalent one on no less favourable terms.",
+      "<strong>Paternity leave &amp; Shared Parental Leave:</strong> 4 weeks of Government-Paid Paternity Leave for fathers, plus 10 weeks of SPL shared between both parents (5 weeks each by default, adjustable by agreement) for children born on or after 1 April 2026 — 6 weeks (3 each by default) for children born between 1 April 2025 and 31 March 2026. Both must be taken within 12 months of birth; pay is capped at S$2,500 per week (inclusive of CPF), reimbursed by the Government.",
+      "<strong>National Service (NS) leave:</strong> protected leave for in-camp training and call-ups, separate from annual leave. Salary continues and the company claims support from MINDEF; there's no dismissal, demotion or loss of benefits for NS duty, and you resume the same or an equivalent role afterward. Employees may apply to MINDEF to defer where there's a genuine business or personal need, with HR's support.",
+      "<strong>Medical &amp; hospitalisation leave</strong> scales with length of service: 5 days outpatient / 15 days total at 3 months' service, rising to 14 days outpatient / 60 days total (inclusive of hospitalisation, not on top of it) from 6 months onward. A medical certificate from a registered doctor or dentist is required for any paid sick leave; notify your manager or HR within 48 hours of the absence. A false MC is a disciplinary matter.",
+      "<strong>Applying:</strong> submit the leave form to your manager and HR with supporting proof (MC, call-up notice or expected delivery date). Your manager confirms cover arrangements within 3 working days, then HR checks eligibility/balance and confirms approval in writing. For parental leave, HR also files the government reimbursement claim.",
+      "<strong>Quick answers:</strong> sick leave does not carry forward unless stated otherwise; parents may split SPL unevenly if both agree and register the change; NS leave does not reduce your annual leave balance.",
+      "[PLACEHOLDER] Before this guideline is finalised: confirm NS pay-claim rates/steps with MINDEF, confirm which sick leave rules apply to managers and executives with MOM, confirm the maternity pay reimbursement caps on the MSF/MOM sites, and have the final policy reviewed by legal/HR counsel.",
+      "<a href=\"assets/docs/leave-policy-guideline-singapore.pdf\" download>📄 Download the full Leave Policy Guideline (PDF)</a>"
+    ]
+  },
+  {
     id: "timesheet-payment",
     title: "Timesheet & Payment Schedule",
     category: "Finance & Payroll",
