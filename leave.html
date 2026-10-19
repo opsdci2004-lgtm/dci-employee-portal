@@ -114,6 +114,23 @@
         <button id="signout-btn" class="btn btn-outline btn-sm">Sign out</button>
       </div>
 
+      <!-- My details (needed on the printed leave form) -->
+      <form id="details-form" class="card" style="margin-bottom:28px;">
+        <h3 style="margin-bottom:14px;">My details</h3>
+        <div class="form-row">
+          <div class="field">
+            <label for="details-name">Full name</label>
+            <input type="text" id="details-name">
+          </div>
+          <div class="field">
+            <label for="details-department">Department</label>
+            <input type="text" id="details-department" placeholder="e.g. Finance, IT, Projects">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-outline btn-sm">Save details</button>
+        <span id="details-msg" style="margin-left:10px;font-size:0.85rem;"></span>
+      </form>
+
       <!-- Balance cards -->
       <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
         <span class="eyebrow">My balance</span>
@@ -148,6 +165,16 @@
             <input type="date" id="leave-end" required>
           </div>
         </div>
+        <div class="field" id="half-day-field" style="display:none;">
+          <label style="display:flex;align-items:center;gap:8px;font-weight:600;">
+            <input type="checkbox" id="leave-half-day" style="width:auto;">
+            Half day only (same-day leave)
+          </label>
+          <select id="leave-half-period" style="margin-top:8px;display:none;">
+            <option value="AM">Morning (08:30–12:00)</option>
+            <option value="PM">Afternoon (13:30–18:00)</option>
+          </select>
+        </div>
         <p class="form-hint" id="working-days-preview"></p>
         <div class="field">
           <label for="leave-reason">Reason</label>
@@ -164,6 +191,31 @@
       <div class="request-list" id="request-list"></div>
       <div class="empty-state" id="request-empty">
         <p>You haven't submitted any leave requests yet.</p>
+      </div>
+
+      <!-- Printable Leave Application Form -->
+      <div class="section-head fade-up" style="text-align:left;margin:40px 0 20px;max-width:none;">
+        <span class="eyebrow">For signing</span>
+        <h2>Print leave application form</h2>
+        <p style="text-align:left;">Pick a month — we'll fill in the official DCI Consultants leave application form with your requests for that month, ready to print and sign.</p>
+      </div>
+      <div class="card" style="margin-bottom:36px;">
+        <div class="form-row" style="align-items:flex-end;">
+          <div class="field" style="margin-bottom:0;">
+            <label for="form-month">Month</label>
+            <input type="month" id="form-month">
+          </div>
+          <button type="button" id="generate-form-btn" class="btn btn-primary" style="height:42px;">Generate form</button>
+        </div>
+        <p class="form-hint" id="form-gen-msg" style="margin-top:12px;"></p>
+      </div>
+
+      <div id="leave-form-wrap" class="hidden">
+        <div class="no-print" style="display:flex;gap:10px;margin-bottom:16px;">
+          <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">🖨 Print / Save as PDF</button>
+          <button type="button" class="btn btn-outline btn-sm" id="close-form-btn">Close</button>
+        </div>
+        <div id="leaveFormPrint"></div>
       </div>
 
       <!-- Manager-only: approval queue + team calendar -->

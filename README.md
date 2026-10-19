@@ -144,6 +144,16 @@ update both values here.
 - **Team calendar**: a month grid (manager view) showing everyone's
   approved (solid) and pending (dashed) leave, to spot overlaps before
   approving.
+- **Printable leave application form**: pick a month under "Print leave
+  application form" and it fills in DCI Consultants' real paper leave
+  form (name, department, each leave row with dates/times/reason, the
+  AL/MC earned-taken-applied-balance summary, and blank signature lines)
+  so the employee can print it, sign it and hand it to their manager.
+  Uses the browser's own print dialog — no PDF library involved; choose
+  "Save as PDF" as the destination if a PDF file is needed. If you
+  already ran `leave-schema.sql` before this feature existed, re-run the
+  updated file once — it adds a `department` column and a half-day field
+  without touching any existing data.
 
 
 

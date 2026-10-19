@@ -41,12 +41,25 @@ class LeaveApp {
       topbarRole: byId("topbar-role"),
       topbarAvatar: byId("topbar-avatar"),
       signoutBtn: byId("signout-btn"),
+      detailsForm: byId("details-form"),
+      detailsName: byId("details-name"),
+      detailsDepartment: byId("details-department"),
+      detailsMsg: byId("details-msg"),
       balanceGrid: byId("balance-grid"),
       applyForm: byId("apply-form"),
       applyMsg: byId("apply-msg"),
+      halfDayField: byId("half-day-field"),
+      halfDayCheckbox: byId("leave-half-day"),
+      halfPeriodSelect: byId("leave-half-period"),
       workingDaysPreview: byId("working-days-preview"),
       requestList: byId("request-list"),
       requestEmpty: byId("request-empty"),
+      formMonth: byId("form-month"),
+      generateFormBtn: byId("generate-form-btn"),
+      formGenMsg: byId("form-gen-msg"),
+      leaveFormWrap: byId("leave-form-wrap"),
+      leaveFormPrint: byId("leaveFormPrint"),
+      closeFormBtn: byId("close-form-btn"),
       managerSection: byId("manager-section"),
       queueList: byId("queue-list"),
       queueEmpty: byId("queue-empty"),
@@ -60,12 +73,26 @@ class LeaveApp {
   init() {
     this.wireAuthForms();
     this.els.signoutBtn.addEventListener("click", () => this.signOut());
+    this.els.detailsForm.addEventListener("submit", (e) => this.saveDetails(e));
     this.els.applyForm.addEventListener("submit", (e) => this.submitLeaveRequest(e));
     ["leave-start", "leave-end"].forEach((id) => {
-      document.getElementById(id).addEventListener("change", () => this.updateWorkingDaysPreview());
+      document.getElementById(id).addEventListener("change", () => {
+        this.toggleHalfDayField();
+        this.updateWorkingDaysPreview();
+      });
     });
+    this.els.halfDayCheckbox.addEventListener("change", () => {
+      this.els.halfPeriodSelect.style.display = this.els.halfDayCheckbox.checked ? "block" : "none";
+      this.updateWorkingDaysPreview();
+    });
+    this.els.halfPeriodSelect.addEventListener("change", () => this.updateWorkingDaysPreview());
     this.els.calPrev.addEventListener("click", () => this.shiftMonth(-1));
     this.els.calNext.addEventListener("click", () => this.shiftMonth(1));
+    this.els.generateFormBtn.addEventListener("click", () => this.generateLeaveForm());
+    this.els.closeFormBtn.addEventListener("click", () => this.els.leaveFormWrap.classList.add("hidden"));
+
+    const now = new Date();
+    this.els.formMonth.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
     this.sb.auth.onAuthStateChange((_event, session) => {
       if (session && session.user) {
@@ -165,6 +192,8 @@ class LeaveApp {
     this.profile = profile;
 
     this.renderTopbar();
+    this.els.detailsName.value = this.profile.full_name || "";
+    this.els.detailsDepartment.value = this.profile.department || "";
     await this.loadHolidays();
     await this.refreshBalances();
     await this.refreshMyRequests();
@@ -194,6 +223,38 @@ class LeaveApp {
     this.els.topbarAvatar.textContent = name.slice(0, 1).toUpperCase();
     this.els.topbarRole.textContent = this.profile.role;
     this.els.topbarRole.classList.toggle("is-manager", this.profile.role === "manager");
+  }
+
+  async saveDetails(e) {
+    e.preventDefault();
+    const fullName = this.els.detailsName.value.trim();
+    const department = this.els.detailsDepartment.value.trim();
+    const { error } = await this.sb.rpc("update_my_profile", {
+      p_full_name: fullName,
+      p_department: department || null
+    });
+    if (error) {
+      this.els.detailsMsg.textContent = error.message;
+      this.els.detailsMsg.style.color = "#a4241c";
+      return;
+    }
+    this.profile.full_name = fullName || this.profile.full_name;
+    this.profile.department = department || null;
+    this.renderTopbar();
+    this.els.detailsMsg.textContent = "Saved.";
+    this.els.detailsMsg.style.color = "#1a7a43";
+    setTimeout(() => { this.els.detailsMsg.textContent = ""; }, 2500);
+  }
+
+  toggleHalfDayField() {
+    const start = document.getElementById("leave-start").value;
+    const end = document.getElementById("leave-end").value;
+    const sameDay = start && end && start === end;
+    this.els.halfDayField.style.display = sameDay ? "block" : "none";
+    if (!sameDay) {
+      this.els.halfDayCheckbox.checked = false;
+      this.els.halfPeriodSelect.style.display = "none";
+    }
   }
 
   async loadHolidays() {
@@ -232,6 +293,15 @@ class LeaveApp {
       this.els.workingDaysPreview.textContent = "End date must be on or after the start date.";
       return;
     }
+    if (this.els.halfDayCheckbox.checked && start === end) {
+      const day = new Date(start + "T00:00:00").getDay();
+      if (day === 0 || day === 6 || this.holidaySet.has(start)) {
+        this.els.workingDaysPreview.textContent = "That date is a weekend or public holiday — half-day leave isn't applicable.";
+        return;
+      }
+      this.els.workingDaysPreview.textContent = "0.5 working day";
+      return;
+    }
     const days = this.calcWorkingDays(start, end);
     this.els.workingDaysPreview.textContent = `${days} working day${days === 1 ? "" : "s"} (weekends & public holidays excluded)`;
   }
@@ -252,10 +322,25 @@ class LeaveApp {
       this.setFormMsg(this.els.applyMsg, "Please add a short reason.", "error");
       return;
     }
-    const workingDays = this.calcWorkingDays(start, end);
-    if (workingDays === 0) {
-      this.setFormMsg(this.els.applyMsg, "That date range contains no working days.", "error");
-      return;
+
+    const isHalfDay = this.els.halfDayCheckbox.checked && start === end;
+    let workingDays;
+    let halfDayPeriod = null;
+
+    if (isHalfDay) {
+      const day = new Date(start + "T00:00:00").getDay();
+      if (day === 0 || day === 6 || this.holidaySet.has(start)) {
+        this.setFormMsg(this.els.applyMsg, "That date is a weekend or public holiday.", "error");
+        return;
+      }
+      workingDays = 0.5;
+      halfDayPeriod = this.els.halfPeriodSelect.value;
+    } else {
+      workingDays = this.calcWorkingDays(start, end);
+      if (workingDays === 0) {
+        this.setFormMsg(this.els.applyMsg, "That date range contains no working days.", "error");
+        return;
+      }
     }
 
     const { error } = await this.sb.from("leave_requests").insert({
@@ -264,6 +349,7 @@ class LeaveApp {
       start_date: start,
       end_date: end,
       working_days: workingDays,
+      half_day_period: halfDayPeriod,
       reason
     });
 
@@ -274,6 +360,8 @@ class LeaveApp {
 
     this.setFormMsg(this.els.applyMsg, "Leave request submitted.", "success");
     this.els.applyForm.reset();
+    this.els.halfDayField.style.display = "none";
+    this.els.halfPeriodSelect.style.display = "none";
     this.els.workingDaysPreview.textContent = "";
     await this.refreshMyRequests();
     if (this.profile.role === "manager") {
@@ -292,17 +380,19 @@ class LeaveApp {
     const yearEnd = `${this.calYear}-12-31`;
     const { data, error } = await this.sb
       .from("leave_requests")
-      .select("leave_type, working_days")
+      .select("leave_type, working_days, status")
       .eq("employee_id", this.user.id)
-      .eq("status", "approved")
+      .in("status", ["approved", "pending"])
       .gte("start_date", yearStart)
       .lte("start_date", yearEnd);
 
     if (error) console.error(error);
 
     const taken = { annual: 0, medical: 0, unpaid: 0 };
+    const applied = { annual: 0, medical: 0, unpaid: 0 };
     (data || []).forEach((r) => {
-      taken[r.leave_type] = (taken[r.leave_type] || 0) + Number(r.working_days);
+      const bucket = r.status === "approved" ? taken : applied;
+      bucket[r.leave_type] = (bucket[r.leave_type] || 0) + Number(r.working_days);
     });
 
     const cards = [
@@ -319,16 +409,18 @@ class LeaveApp {
             <h3>${c.label}</h3>
             <div class="balance-remaining">${taken[c.type]}</div>
             <div class="balance-row"><span>Days taken this year</span></div>
+            <div class="balance-row"><span>Days pending approval</span><strong>${applied[c.type]}</strong></div>
             <div class="balance-row"><span>No fixed entitlement — subject to approval</span></div>
           </div>`;
         }
-        const remaining = c.entitlement - taken[c.type];
+        const remaining = c.entitlement - taken[c.type] - applied[c.type];
         return `
         <div class="balance-card">
           <h3>${c.label}</h3>
           <div class="balance-remaining">${remaining}</div>
           <div class="balance-row"><span>Remaining of</span><strong>${c.entitlement} days</strong></div>
           <div class="balance-row"><span>Taken this year</span><strong>${taken[c.type]} days</strong></div>
+          <div class="balance-row"><span>Pending approval</span><strong>${applied[c.type]} days</strong></div>
         </div>`;
       })
       .join("");
@@ -359,7 +451,7 @@ class LeaveApp {
       <div class="request-item">
         <div class="request-item-top">
           <div>
-            <h4>${this.leaveTypeLabel(r.leave_type)} · ${r.working_days} day${r.working_days == 1 ? "" : "s"}</h4>
+            <h4>${this.leaveTypeLabel(r.leave_type)} · ${r.working_days} day${r.working_days == 1 ? "" : "s"}${r.half_day_period ? ` (${r.half_day_period})` : ""}</h4>
             <div class="request-meta">${formatDateRange(r.start_date, r.end_date)}</div>
           </div>
           <span class="status-pill ${r.status}">${r.status}</span>
@@ -387,6 +479,91 @@ class LeaveApp {
 
   leaveTypeLabel(t) {
     return { annual: "Annual Leave", medical: "Medical Leave", unpaid: "Unpaid Leave" }[t] || t;
+  }
+
+  async generateLeaveForm() {
+    this.els.formGenMsg.textContent = "Generating...";
+    const monthVal = this.els.formMonth.value; // "YYYY-MM"
+    if (!monthVal) {
+      this.els.formGenMsg.textContent = "Please pick a month first.";
+      return;
+    }
+    const [y, m] = monthVal.split("-").map(Number);
+    const monthStart = `${monthVal}-01`;
+    const monthEndDate = new Date(y, m, 0); // last day of month
+    const monthEnd = toISO(monthEndDate);
+    const yearStart = `${y}-01-01`;
+
+    // Rows for the selected month (what's being applied for / already on record this month).
+    const { data: monthRows, error: monthErr } = await this.sb
+      .from("leave_requests")
+      .select("*")
+      .eq("employee_id", this.user.id)
+      .in("status", ["pending", "approved"])
+      .gte("start_date", monthStart)
+      .lte("start_date", monthEnd)
+      .order("start_date", { ascending: true });
+
+    if (monthErr) {
+      this.els.formGenMsg.textContent = monthErr.message;
+      return;
+    }
+
+    // Approved leave earlier in the year, outside this month (= "already taken").
+    const { data: priorApproved, error: priorErr } = await this.sb
+      .from("leave_requests")
+      .select("leave_type, working_days")
+      .eq("employee_id", this.user.id)
+      .eq("status", "approved")
+      .gte("start_date", yearStart)
+      .lte("start_date", `${y}-12-31`)
+      .or(`start_date.lt.${monthStart},start_date.gt.${monthEnd}`);
+
+    if (priorErr) console.error(priorErr);
+
+    const takenYtd = { annual: 0, medical: 0 };
+    (priorApproved || []).forEach((r) => {
+      if (takenYtd[r.leave_type] !== undefined) {
+        takenYtd[r.leave_type] += Number(r.working_days);
+      }
+    });
+
+    const appliedThisMonth = { annual: 0, medical: 0 };
+    (monthRows || []).forEach((r) => {
+      if (appliedThisMonth[r.leave_type] !== undefined) {
+        appliedThisMonth[r.leave_type] += Number(r.working_days);
+      }
+    });
+
+    const summary = {
+      annual: {
+        earned: this.profile.annual_entitlement,
+        taken: takenYtd.annual,
+        applied: appliedThisMonth.annual,
+        balance: this.profile.annual_entitlement - takenYtd.annual - appliedThisMonth.annual
+      },
+      medical: {
+        earned: this.profile.medical_entitlement,
+        taken: takenYtd.medical,
+        applied: appliedThisMonth.medical,
+        balance: this.profile.medical_entitlement - takenYtd.medical - appliedThisMonth.medical
+      }
+    };
+
+    const monthLabel = monthEndDate.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+
+    this.els.leaveFormPrint.innerHTML = buildLeaveFormHtml({
+      staffName: this.profile.full_name,
+      department: this.profile.department,
+      monthLabel,
+      rows: monthRows || [],
+      summary
+    });
+    this.els.leaveFormWrap.classList.remove("hidden");
+    this.els.formGenMsg.textContent = (monthRows || []).length === 0
+      ? "No leave requests found for that month — a blank form has been generated."
+      : "";
+    this.els.leaveFormWrap.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   async loadAllProfiles() {
@@ -542,6 +719,129 @@ class LeaveApp {
 
 function toISO(d) {
   return d.toISOString().slice(0, 10);
+}
+
+function formatLfDate(iso) {
+  const d = new Date(iso + "T00:00:00");
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${d.getDate()}-${months[d.getMonth()]}-${String(d.getFullYear()).slice(-2)}`;
+}
+
+function lfTimes(row) {
+  if (row.half_day_period === "AM") return { from: "0830", to: "1200" };
+  if (row.half_day_period === "PM") return { from: "1330", to: "1800" };
+  return { from: "0830", to: "1800" };
+}
+
+function buildLeaveFormHtml({ staffName, department, monthLabel, rows, summary }) {
+  const typeLabel = { annual: "Annual Leave", medical: "Medical Leave", unpaid: "Unpaid Leave" };
+
+  const tableRows = rows
+    .map((r) => {
+      const t = lfTimes(r);
+      return `
+      <tr>
+        <td>${typeLabel[r.leave_type]}${r.status === "pending" ? " (pending)" : ""}</td>
+        <td class="lf-num">${r.working_days}</td>
+        <td class="lf-num">${formatLfDate(r.start_date)}<br>${t.from}</td>
+        <td class="lf-num">${formatLfDate(r.end_date)}<br>${t.to}</td>
+        <td>${escapeHtml(r.reason)}</td>
+      </tr>`;
+    })
+    .join("");
+
+  const blankRows = Array.from({ length: Math.max(0, 6 - rows.length) })
+    .map(() => `<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>`)
+    .join("");
+
+  return `
+  <div class="leave-form-doc">
+    <h1>LEAVE APPLICATION FORM</h1>
+    <p class="lf-sample-note">${rows.length === 0 ? "No requests recorded for this month — blank form for manual use." : "Generated from the DCI Consultants Employee Portal."}</p>
+
+    <div class="lf-meta">
+      <div><span class="lf-label">Name of Staff:</span> ${escapeHtml(staffName || "")}</div>
+      <div><span class="lf-label">Department:</span> ${escapeHtml(department || "")}</div>
+    </div>
+    <div class="lf-month">Leave Applied for the Month of: ${monthLabel}</div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Type of Leave</th>
+          <th>Number of Days</th>
+          <th>Period of Leave<br>From</th>
+          <th>Period of Leave<br>To</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${tableRows}
+        ${blankRows}
+      </tbody>
+    </table>
+
+    <div class="lf-contact">
+      During overseas/long leave period, please state contact details:<br>
+      Landline:<span class="lf-line-inline"></span> &nbsp; Mobile:<span class="lf-line-inline"></span>
+    </div>
+
+    <div class="lf-two-col">
+      <div>
+        <table class="lf-legend-table">
+          <tr><td colspan="2"><strong>Type of Leave *</strong></td></tr>
+          <tr><td>MC</td><td>Medical Leave</td></tr>
+          <tr><td>AL</td><td>Annual Leave</td></tr>
+          <tr><td>AML</td><td>Taking Leave in the Morning</td></tr>
+          <tr><td>PML</td><td>Taking Leave in the Afternoon</td></tr>
+          <tr><td>UPL</td><td>Unpaid Leave</td></tr>
+          <tr><td>RSV</td><td>Reservist Medical Leave</td></tr>
+          <tr><td>CL</td><td>Childcare Leave</td></tr>
+          <tr><td>PL</td><td>Paternity Leave</td></tr>
+          <tr><td>HSP</td><td>Hospitalisation Leave</td></tr>
+        </table>
+      </div>
+      <div>
+        <table class="lf-summary-table">
+          <tr><td>AL Earned</td><td>${summary.annual.earned}</td></tr>
+          <tr><td>AL Taken</td><td>${summary.annual.taken}</td></tr>
+          <tr><td>AL Applied</td><td>${summary.annual.applied}</td></tr>
+          <tr><td>AL Balance</td><td>${summary.annual.balance}</td></tr>
+          <tr><td>MC Earned</td><td>${summary.medical.earned}</td></tr>
+          <tr><td>MC Taken</td><td>${summary.medical.taken}</td></tr>
+          <tr><td>MC Applied</td><td>${summary.medical.applied}</td></tr>
+          <tr><td>MC Balance</td><td>${summary.medical.balance}</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="lf-sign-block">
+      <div>
+        <div class="lf-caption">Applied By</div>
+        <div class="lf-field-row"><span class="lf-field-label">Staff's Signature:</span><span class="lf-line"></span></div>
+        <div class="lf-field-row"><span class="lf-field-label">Staff's Name:</span><span class="lf-line">${escapeHtml(staffName || "")}</span></div>
+        <div class="lf-field-row"><span class="lf-field-label">Date:</span><span class="lf-line"></span></div>
+      </div>
+      <div>
+        <div class="lf-caption">Approved by</div>
+        <div class="lf-field-row"><span class="lf-field-label">Supervisor's Signature:</span><span class="lf-line"></span></div>
+        <div class="lf-field-row"><span class="lf-field-label">Supervisor's Name:</span><span class="lf-line"></span></div>
+        <div class="lf-field-row"><span class="lf-field-label">Date:</span><span class="lf-line"></span></div>
+      </div>
+    </div>
+
+    <div class="lf-remarks">
+      <strong>Remarks</strong>
+      <div>After your leave has been approved, please apply the same in Infotech – Leave portal</div>
+      <div>For Medical Leave, please upload Medical Certificate in Infotech – Leave portal</div>
+      <div>For Medical Claim, please upload Medical Receipt in Infotech – Claims portal</div>
+    </div>
+
+    <div class="lf-footer">
+      DCI Consultants Pte Ltd<br>
+      25 International Business Park #02-35 German Centre Singapore 609915
+    </div>
+  </div>`;
 }
 
 function formatDateRange(startIso, endIso) {

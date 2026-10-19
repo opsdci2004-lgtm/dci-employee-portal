@@ -14,10 +14,15 @@ create table if not exists public.profiles (
   email text not null,
   role text not null default 'employee' check (role in ('employee','manager')),
   team text not null default 'General',
+  department text,
   annual_entitlement numeric not null default 14,
   medical_entitlement numeric not null default 14,
   created_at timestamptz not null default now()
 );
+
+-- Adds the department column if this table already existed from an
+-- earlier run of this script (before the printable leave form feature).
+alter table public.profiles add column if not exists department text;
 
 -- ---------- public_holidays ----------
 -- Company-wide holiday calendar used to calculate working days.
@@ -41,8 +46,16 @@ create table if not exists public.leave_requests (
   decided_by uuid references public.profiles(id),
   decided_at timestamptz,
   created_at timestamptz not null default now(),
+  half_day_period text check (half_day_period in ('AM','PM')),
   constraint end_after_start check (end_date >= start_date)
 );
+
+-- Adds the half_day_period column if this table already existed from an
+-- earlier run of this script (before the printable leave form feature).
+alter table public.leave_requests add column if not exists half_day_period text;
+alter table public.leave_requests drop constraint if exists leave_requests_half_day_period_check;
+alter table public.leave_requests add constraint leave_requests_half_day_period_check
+  check (half_day_period in ('AM','PM') or half_day_period is null);
 
 create index if not exists leave_requests_employee_idx on public.leave_requests (employee_id);
 create index if not exists leave_requests_status_idx on public.leave_requests (status);
@@ -91,6 +104,26 @@ as $$
     select 1 from public.profiles where id = auth.uid() and role = 'manager'
   );
 $$;
+
+-- =====================================================
+-- Let a user update their own name/department only (never role or
+-- entitlements) without opening a broad UPDATE policy on profiles.
+-- =====================================================
+create or replace function public.update_my_profile(p_full_name text, p_department text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.profiles
+  set full_name = coalesce(nullif(p_full_name, ''), full_name),
+      department = p_department
+  where id = auth.uid();
+end;
+$$;
+
+grant execute on function public.update_my_profile(text, text) to authenticated;
 
 -- =====================================================
 -- Row Level Security
