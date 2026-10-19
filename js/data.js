@@ -78,12 +78,12 @@ const TEMPLATES = [
   },
   {
     id: "equipment-request",
-    title: "IT Equipment Request",
-    description: "Request a laptop, monitor or other equipment needed to perform your role.",
+    title: "IT Equipment Request Form",
+    description: "For DCI permanent employees only — not for contract/outsourced staff assigned to client engagements. Request new, replacement or upgraded equipment, for your reporting manager's approval.",
     category: "IT",
-    fileType: "DOCX",
+    fileType: "PDF",
     icon: "💻",
-    file: "assets/docs/equipment-request-form.txt"
+    file: "assets/docs/it-equipment-request-form.pdf"
   }
 ];
 

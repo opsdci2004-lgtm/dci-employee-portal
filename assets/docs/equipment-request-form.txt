@@ -1,8 +1,0 @@
-DCI CONSULTANTS — IT EQUIPMENT REQUEST FORM [PLACEHOLDER FILE]
-
-This is a placeholder for the real IT Equipment Request form (.docx).
-Replace this file with the actual document and update the "file"
-path for the "equipment-request" entry in js/data.js if the filename changes.
-
-Suggested fields: Employee Name | Project | Equipment Requested |
-Justification | Manager Approval | IT Approval | Expected Return Date
