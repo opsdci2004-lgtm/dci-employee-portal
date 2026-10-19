@@ -16,11 +16,11 @@ const TEMPLATES = [
   {
     id: "timesheet",
     title: "Weekly Timesheet",
-    description: "Standard weekly timesheet for recording hours worked, overtime and leave taken.",
+    description: "Standard timesheet for recording daily time in/out, overtime and leave taken, with a public holiday reference sheet.",
     category: "Finance & Payroll",
     fileType: "XLSX",
     icon: "🗒️",
-    file: "assets/docs/timesheet-template.txt"
+    file: "assets/docs/weekly-timesheet-template.xlsx"
   },
   {
     id: "leave-application",
