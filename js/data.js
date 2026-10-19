@@ -84,6 +84,15 @@ const TEMPLATES = [
     fileType: "PDF",
     icon: "💻",
     file: "assets/docs/it-equipment-request-form.pdf"
+  },
+  {
+    id: "certificate-of-employment",
+    title: "Certificate of Employment (for Visa / Citizenship / PR Applications)",
+    description: "For foreign staff who need a confirmation-of-employment letter addressed to ICA for a work pass, Citizenship or PR application. HR fills in the bracketed fields and prints on company letterhead before issuing — not a self-service download.",
+    category: "HR",
+    fileType: "PDF",
+    icon: "🛂",
+    file: "assets/docs/certificate-of-employment.pdf"
   }
 ];
 
