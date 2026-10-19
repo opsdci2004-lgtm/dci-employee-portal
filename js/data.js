@@ -329,40 +329,40 @@ const FAQS = [
     a: "The official source is MSF's Government-Paid Leave portal at www.profamilyleave.msf.gov.sg — check there for the current rules, or ask DCI HR if you're not sure which apply to you."
   },
   {
-    q: "Hospital insurance (STE UBS staff): Which plan are they on?",
-    a: "Staff deployed to STE UBS only are covered by Great Eastern Group Hospital &amp; Surgical (GHS) Plan 4, with Major Medical. Staff on other clients are not covered by this plan. Plan 4 is a private-hospital plan, and the 70%/80% pro-ration that applies to some other plans does not apply to Plan 4."
+    q: "Hospital insurance (STE UBS, MSS and T&S staff): Which plan are they on?",
+    a: "Staff deployed to STE UBS, MSS or T&amp;S are covered by Great Eastern Group Hospital &amp; Surgical (GHS) Plan 4, with Major Medical. Staff on other clients are not covered by this plan. Plan 4 is a private-hospital plan, and the 70%/80% pro-ration that applies to some other plans does not apply to Plan 4."
   },
   {
-    q: "Hospital insurance (STE UBS staff): What ward and room cover do they get?",
+    q: "Hospital insurance (STE UBS, MSS and T&S staff): What ward and room cover do they get?",
     a: "Room &amp; board: a 4-bed ward in a private hospital, per day for up to 120 days (including ICU). Intensive Care Unit (ICU): up to S$10,000."
   },
   {
-    q: "Hospital insurance (STE UBS staff): What is the main limit per stay?",
+    q: "Hospital insurance (STE UBS, MSS and T&S staff): What is the main limit per stay?",
     a: "Up to S$15,000 per disability in total for: hospital miscellaneous services (including surgical implants, with 20% co-insurance on implants), surgery, in-hospital doctor's visits (up to 90 days), X-rays, lab tests and specialist consultation within 90 days before admission, treatment up to 90 days after discharge, emergency outpatient treatment and emergency dental treatment due to accident only, miscarriage (including ectopic pregnancy), and home nursing (up to 182 days per policy period)."
   },
   {
-    q: "Hospital insurance (STE UBS staff): Are kidney dialysis and cancer treatment covered as outpatient?",
+    q: "Hospital insurance (STE UBS, MSS and T&S staff): Are kidney dialysis and cancer treatment covered as outpatient?",
     a: "Yes. Outpatient kidney dialysis and outpatient cancer treatment are covered up to S$15,000 per policy period (shown as one figure for both in the schedule; check with Great Eastern whether the limit is shared)."
   },
   {
-    q: "Hospital insurance (STE UBS staff): What other benefits are there?",
+    q: "Hospital insurance (STE UBS, MSS and T&S staff): What other benefits are there?",
     a: "Overseas hospitalisation due to accident: 150% of the standard benefits. Parental accommodation: S$100 a day, up to 60 days per disability. Funeral expense: S$10,000. Mental wellness: S$5,000 per policy period. Rehabilitation: S$5,000 (up to 31 days)."
   },
   {
-    q: "Hospital insurance (STE UBS staff): Is there hospital cash for a government hospital stay?",
+    q: "Hospital insurance (STE UBS, MSS and T&S staff): Is there hospital cash for a government hospital stay?",
     a: "Yes, per day for up to 90 days in a Government Restructured Hospital: B2/B2+ ward S$250, C ward S$300. There is no cash benefit for a B1 ward on Plan 4."
   },
   {
-    q: "Hospital insurance (STE UBS staff): What does Major Medical add?",
+    q: "Hospital insurance (STE UBS, MSS and T&S staff): What does Major Medical add?",
     a: "Up to S$45,000 per policy period for eligible expenses above the GHS limits, but only if the stay is more than 20 continuous days, or for a major surgery (MOH Table of Surgical Procedures, Table 5B and above). The deductible is as per the basic GHS, and the staff member pays 20% co-insurance. It can be upgraded to Major Medical Plus for an extra premium."
   },
   {
-    q: "Hospital insurance (STE UBS staff): Where do these figures come from?",
+    q: "Hospital insurance (STE UBS, MSS and T&S staff): Where do these figures come from?",
     a: "Great Eastern's GHS Schedule of Benefits, Plan 4 column. The policy wording and Great Eastern's decision on each claim take priority over this summary — check the figures again when the policy is renewed."
   },
   {
     q: "Work injury insurance (all staff): Am I covered if I get hurt at work?",
-    a: "Yes. All DCI staff, including those at STE UBS, are covered by DCI's Work Injury Compensation (WICA) insurance with Great Eastern General Insurance. It covers injuries from work anywhere in Singapore for DCI's business, including at the client's site, and elsewhere as the Work Injury Compensation Act allows. It is separate from the hospital insurance above."
+    a: "Yes. All DCI staff, including those at STE UBS, MSS and T&amp;S, are covered by DCI's Work Injury Compensation (WICA) insurance with Great Eastern General Insurance. It covers injuries from work anywhere in Singapore for DCI's business, including at the client's site, and elsewhere as the Work Injury Compensation Act allows. It is separate from the hospital insurance above."
   },
   {
     q: "Work injury insurance (all staff): What should I do if I'm injured at work?",
