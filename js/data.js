@@ -280,10 +280,6 @@ const FAQS = [
     a: "Check with sale@dci-consultants.com before making remote-work or cross-border arrangements, since this depends on your contract and work-pass conditions."
   },
   {
-    q: "How long does an IT equipment request take to process?",
-    a: "Standard requests are typically fulfilled within 3–5 business days, subject to equipment availability."
-  },
-  {
     q: "Who approves my leave application?",
     a: "Your direct manager approves leave requests. HR will confirm the updated balance once approved."
   }
