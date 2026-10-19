@@ -85,8 +85,8 @@ const POLICIES = [
       "<strong>What it covers:</strong> fair treatment and workplace safety; professional conduct at client sites; confidentiality, data protection and safe use of AI/online tools; zero tolerance for bribery, kickbacks and falsified records (timesheets, invoices, CVs); responsible public conduct and social media use; and how to speak up if something looks wrong.",
       "A quick test for any grey area: Is it lawful? Is it safe? Would DCI and the client both agree it's authorised? Are the records accurate? Would you be comfortable explaining the decision to your manager?",
       "Suspected breaches — of this Code, a policy, or the law — can be reported through DCI's confidential reporting channel. Reports may be made without giving your name where possible, are handled discreetly, and anyone reporting in good faith is protected from retaliation.",
-      "[PLACEHOLDER] Confirm the named reporting contact, escalation channel and effective/next-review dates before this Code is issued to staff.",
-      "<a href=\"assets/docs/code-of-business-conduct-and-ethics.txt\" download>📄 Download the full Code of Business Conduct &amp; Ethics</a>"
+      "The full document's last page still has a few fields management needs to fill in before this Code is formally issued — the named reporting contact, approver, effective date and next review date.",
+      "<a href=\"assets/docs/code-of-business-conduct-and-ethics.pdf\" download>📄 Download the full Code of Business Conduct &amp; Ethics (PDF)</a>"
     ]
   },
   {

@@ -847,7 +847,7 @@ function buildLeaveFormHtml({ staffName, department, monthLabel, rows, summary }
 
     <div class="lf-footer">
       DCI Consultants Pte Ltd<br>
-      25 International Business Park #02-35 German Centre Singapore 609915
+      No 25 International Business Park #02-53 Singapore 609916
     </div>
   </div>`;
 }
