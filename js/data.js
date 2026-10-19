@@ -75,7 +75,7 @@ const POLICIES = [
     id: "code-of-conduct",
     title: "Code of Business Conduct & Ethics",
     category: "Workplace",
-    updated: "2026-10-01",
+    updated: "2026-10-19",
     summary: "The standard of conduct DCI expects everywhere we work — our offices, remote work and client sites.",
     body: [
       "We keep this Code in plain, everyday language on purpose — a policy only works if people can actually understand it, not just sign it.",
@@ -85,7 +85,7 @@ const POLICIES = [
       "<strong>What it covers:</strong> fair treatment and workplace safety; professional conduct at client sites; confidentiality, data protection and safe use of AI/online tools; zero tolerance for bribery, kickbacks and falsified records (timesheets, invoices, CVs); responsible public conduct and social media use; and how to speak up if something looks wrong.",
       "A quick test for any grey area: Is it lawful? Is it safe? Would DCI and the client both agree it's authorised? Are the records accurate? Would you be comfortable explaining the decision to your manager?",
       "Suspected breaches — of this Code, a policy, or the law — can be reported through DCI's confidential reporting channel. Reports may be made without giving your name where possible, are handled discreetly, and anyone reporting in good faith is protected from retaliation.",
-      "The full document's last page still has a few fields management needs to fill in before this Code is formally issued — the named reporting contact, approver, effective date and next review date.",
+      "Effective 19 October 2026 (next review 19 October 2030), approved by the Director of DCI Consultants Pte Ltd. To report a concern, contact sale@dci-consultants.com, or escalate to Ong Bee Hoon if it involves your immediate reporting line.",
       "<a href=\"assets/docs/code-of-business-conduct-and-ethics.pdf\" download>📄 Download the full Code of Business Conduct &amp; Ethics (PDF)</a>"
     ]
   },
