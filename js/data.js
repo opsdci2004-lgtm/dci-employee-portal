@@ -200,7 +200,8 @@ const GUIDES = [
       "Complete your details, leave type and requested dates.",
       "Submit the form to your manager at least 3 business days before the leave start date.",
       "Wait for written approval before confirming any travel or personal plans.",
-      "Once approved, HR will update your leave balance within 2 business days."
+      "Once approved, HR will update your leave balance within 2 business days.",
+      "After your client's supervisor has signed off your leave form, log in to the Infotech Leave System to apply for the leave and upload the approved, signed documents."
     ],
     tip: "For sick leave, notify your manager as early as possible on the day of absence — the form can be submitted afterward."
   },
