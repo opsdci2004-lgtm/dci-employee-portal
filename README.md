@@ -1,22 +1,29 @@
 # DCI Consultants — Employee Portal
 
-A plain HTML/CSS/JavaScript website (no frameworks, no build step) for DCI
-Consultants contract employees: company templates, policies and user guides.
+A mostly-static HTML/CSS/JavaScript website for DCI Consultants contract
+employees: company templates, policies, user guides, and a Leave Monitoring
+App. Every page except Leave needs no backend at all; the Leave app talks
+to a small Supabase (Postgres) backend for real shared data — see
+[Leave Monitoring App setup](#leave-monitoring-app-setup) below.
 
 ## Folder structure
 
 ```
-index.html          Home page
-about.html           About page
-templates.html       Company Templates (downloadable forms)
-policies.html        Company Policies (accordion)
-guides.html          Employee User Guides + FAQ
-css/styles.css       All styling (shared by every page)
-js/main.js           All behaviour: nav, dark mode, search/filter, accordions
-js/data.js           Content for templates, policies, guides and FAQ
-assets/images/       Local image assets (fallback is a CSS gradient block)
-assets/docs/         Placeholder downloadable files for the Templates page
-README.md            This file
+index.html            Home page
+about.html             About page
+templates.html         Company Templates (downloadable forms)
+policies.html           Company Policies (accordion)
+guides.html             Employee User Guides + FAQ
+leave.html              Leave Monitoring App (apply / approve / team calendar)
+css/styles.css          All styling (shared by every page)
+js/main.js              Nav, dark mode, search/filter, accordions (pages 1–5)
+js/data.js               Content for templates, policies, guides and FAQ
+js/leave-config.js       Supabase project URL + anon key for the Leave app
+js/leave.js               All Leave app behaviour (auth, forms, approvals, calendar)
+supabase/leave-schema.sql Database schema + security policies for the Leave app
+assets/images/          Local image assets (fallback is a CSS gradient block)
+assets/docs/            Placeholder downloadable files for the Templates page
+README.md               This file
 ```
 
 ## Previewing locally
@@ -78,7 +85,67 @@ To add a new item:
   via the `onerror="handleImgError(this)"` attribute already on each
   `<img>` tag.
 
-## Deploying
+## Leave Monitoring App setup
+
+`leave.html` is the one page that is **not** a static document — it lets
+employees apply for leave and managers approve it, with real data shared
+between everyone who signs in. That needs a backend, so it uses
+[Supabase](https://supabase.com) (a free-tier hosted Postgres database with
+built-in login).
+
+### 1. Run the database schema (one-time)
+1. Open your Supabase project → **SQL Editor** → **New query**.
+2. Paste the entire contents of `supabase/leave-schema.sql` and click **Run**.
+   This creates the `profiles`, `leave_requests` and `public_holidays`
+   tables, wires up a trigger that auto-creates a profile when someone
+   signs up, sets up the access-control (Row Level Security) rules, and
+   seeds a starter Singapore public-holiday list for 2026 — edit or add
+   to that list directly in the table (Table Editor → `public_holidays`).
+3. It's safe to re-run this script later (e.g. after an update) — it won't
+   duplicate tables or holidays.
+
+### 2. Connection details
+`js/leave-config.js` already points at the project used for this build:
+```js
+const SUPABASE_URL = "https://vwfntktsvbprwjebhiwj.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_...";
+```
+The anon key is a **public** client-side key — safe to commit and ship in
+the browser. All real access control happens server-side via the Row
+Level Security policies in `leave-schema.sql`, not by keeping this key
+secret. If you ever point this app at a different Supabase project,
+update both values here.
+
+### 3. How accounts and roles work
+- Anyone can create an account from the "Create account" tab on the Leave
+  page using their work email — this automatically creates an `employee`
+  profile with 14 days annual and 14 days medical entitlement.
+- **Promoting someone to manager** is deliberately not possible from the
+  browser (to stop an employee making themselves a manager). After they
+  sign up once, an admin runs this in the Supabase SQL Editor:
+  ```sql
+  update public.profiles set role = 'manager' where email = 'someone@example.com';
+  ```
+- To change someone's leave entitlement, update their row directly in
+  **Table Editor → profiles** (`annual_entitlement`, `medical_entitlement`).
+- By default Supabase requires email confirmation before first sign-in.
+  For an internal tool this is usually unnecessary friction — you can turn
+  it off under **Authentication → Providers → Email → "Confirm email"**.
+
+### 4. What the app does
+- **Apply for leave**: pick annual / medical / unpaid, a date range and a
+  reason. Working days (excluding weekends and the `public_holidays`
+  table) are calculated live as you pick dates.
+- **Balance card**: shows entitlement, taken and remaining days per leave
+  type for the current calendar year, recalculated from approved requests.
+- **Manager approval queue**: anyone with `role = 'manager'` sees every
+  pending request company-wide, with approve/reject buttons and an
+  optional comment that the employee sees on their own request.
+- **Team calendar**: a month grid (manager view) showing everyone's
+  approved (solid) and pending (dashed) leave, to spot overlaps before
+  approving.
+
+
 
 ### GitHub Pages
 1. Push this folder to a GitHub repository.
@@ -100,14 +167,22 @@ works correctly whether it's served from a domain root or a subfolder.
 ## Security note — please read
 
 Free static hosting (GitHub Pages, Netlify, etc.) is **public on the
-internet by default**. This site has no real backend or login system, so:
+internet by default**. The Home, About, Templates, Policies and Guides
+pages have no backend or login at all, so:
 
 - **Do not** put confidential company data, client data or personal
   employee data (salaries, ID numbers, medical info, etc.) anywhere on
-  this site. A banner on every page reminds visitors of this.
+  those pages. A banner on every page reminds visitors of this.
 - **Do not** attempt to "fake" a login or password screen with
   JavaScript — client-side checks like that are trivially bypassed and
   give a false sense of security.
+
+The **Leave Monitoring App** (`leave.html`) is the one exception: it has
+real accounts (Supabase Auth) and real server-side access control (Row
+Level Security — see `supabase/leave-schema.sql`), so employees only ever
+see their own requests and managers see the team's. Even so, keep leave
+reasons brief and avoid pasting detailed medical information, since this
+is still an internal convenience tool, not a HIPAA/PDPA-grade HR system.
 
 If real access control is needed later, consider one of these instead:
 - **Cloudflare Access** — put the whole site behind Cloudflare's

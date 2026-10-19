@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leave Monitoring | DCI Consultants Employee Portal</title>
+<meta name="description" content="Apply for leave, track your balance, and (for managers) approve requests and view the team calendar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="confidentiality-banner">
+  ⚠ Internal tool — use your real DCI email to sign in, but keep leave reasons brief and non-medical where possible. This site is on free public hosting; do not paste sensitive medical details or documents here.
+</div>
+
+<header class="site-header">
+  <div class="container nav-wrap">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">DCI</span>
+      DCI Consultants
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="templates.html">Templates</a>
+      <a href="policies.html">Policies</a>
+      <a href="guides.html">User Guides</a>
+      <a href="leave.html" aria-current="page">Leave</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" type="button" aria-label="Toggle dark mode">🌙</button>
+      <button class="hamburger" type="button" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container page-hero-grid">
+    <div class="fade-up">
+      <span class="hero-eyebrow">Leave Monitoring</span>
+      <h1>Apply, track and approve leave in one place</h1>
+      <p class="lead">Pick your dates and we work out the working days for you, weekends and public holidays excluded. Managers get an approval queue and a team calendar to spot overlaps before approving.</p>
+    </div>
+    <div class="page-hero-media fade-up">
+      <img
+        src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=900&q=80"
+        alt="Desk calendar and planner representing leave planning"
+        loading="lazy"
+        onerror="handleImgError(this)">
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <!-- ===== Signed-out: sign in / sign up ===== -->
+    <div id="auth-wrap" class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-tabs" role="tablist">
+          <button id="tab-signin" type="button" role="tab" aria-selected="true">Sign in</button>
+          <button id="tab-signup" type="button" role="tab" aria-selected="false">Create account</button>
+        </div>
+
+        <p id="auth-msg" class="form-msg hidden"></p>
+
+        <form id="signin-form">
+          <div class="field">
+            <label for="signin-email">Work email</label>
+            <input type="email" id="signin-email" required autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="signin-password">Password</label>
+            <input type="password" id="signin-password" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Sign in</button>
+        </form>
+
+        <form id="signup-form" class="hidden">
+          <div class="field">
+            <label for="signup-name">Full name</label>
+            <input type="text" id="signup-name" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="signup-email">Work email</label>
+            <input type="email" id="signup-email" required autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" required minlength="6" autocomplete="new-password">
+          </div>
+          <p class="form-hint">New accounts start as "employee". [PLACEHOLDER] Ask HR/IT to promote your account to "manager" if you approve leave for a team.</p>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Create account</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===== Signed-in app ===== -->
+    <div id="app-wrap" class="hidden">
+
+      <div class="leave-topbar">
+        <div class="leave-whoami">
+          <div class="leave-avatar" id="topbar-avatar">?</div>
+          <div>
+            <div style="font-weight:700;" id="topbar-name">—</div>
+            <span class="role-pill" id="topbar-role">employee</span>
+          </div>
+        </div>
+        <button id="signout-btn" class="btn btn-outline btn-sm">Sign out</button>
+      </div>
+
+      <!-- Balance cards -->
+      <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
+        <span class="eyebrow">My balance</span>
+        <h2>Leave balance</h2>
+      </div>
+      <div class="balance-grid" id="balance-grid">
+        <p>Loading balances...</p>
+      </div>
+
+      <!-- Apply for leave -->
+      <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
+        <span class="eyebrow">New request</span>
+        <h2>Apply for leave</h2>
+      </div>
+      <form id="apply-form" class="card" style="margin-bottom:36px;">
+        <p id="apply-msg" class="form-msg hidden"></p>
+        <div class="field">
+          <label for="leave-type">Leave type</label>
+          <select id="leave-type">
+            <option value="annual">Annual Leave</option>
+            <option value="medical">Medical Leave</option>
+            <option value="unpaid">Unpaid Leave</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="leave-start">Start date</label>
+            <input type="date" id="leave-start" required>
+          </div>
+          <div class="field">
+            <label for="leave-end">End date</label>
+            <input type="date" id="leave-end" required>
+          </div>
+        </div>
+        <p class="form-hint" id="working-days-preview"></p>
+        <div class="field">
+          <label for="leave-reason">Reason</label>
+          <textarea id="leave-reason" required placeholder="Short reason for your manager..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit request</button>
+      </form>
+
+      <!-- My requests -->
+      <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
+        <span class="eyebrow">History</span>
+        <h2>My requests</h2>
+      </div>
+      <div class="request-list" id="request-list"></div>
+      <div class="empty-state" id="request-empty">
+        <p>You haven't submitted any leave requests yet.</p>
+      </div>
+
+      <!-- Manager-only: approval queue + team calendar -->
+      <div id="manager-section" class="hidden">
+        <div class="section-head fade-up" style="text-align:left;margin:40px 0 20px;max-width:none;">
+          <span class="eyebrow">Manager view</span>
+          <h2>Approval queue</h2>
+        </div>
+        <div class="queue-list" id="queue-list"></div>
+        <div class="empty-state" id="queue-empty">
+          <p>No pending requests right now.</p>
+        </div>
+
+        <div class="section-head fade-up" style="text-align:left;margin:40px 0 20px;max-width:none;">
+          <span class="eyebrow">Plan around the team</span>
+          <h2>Team calendar</h2>
+          <p style="text-align:left;">Approved leave is solid, pending requests are shown with a dashed border, so you can spot overlaps before approving.</p>
+        </div>
+        <div class="calendar-toolbar">
+          <h3 id="calendar-label">—</h3>
+          <div class="calendar-nav">
+            <button id="cal-prev" type="button" aria-label="Previous month">←</button>
+            <button id="cal-next" type="button" aria-label="Next month">→</button>
+          </div>
+        </div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+        <div class="calendar-legend">
+          <span><span class="legend-dot" style="background:var(--color-primary);"></span>Annual</span>
+          <span><span class="legend-dot" style="background:#e05d5d;"></span>Medical</span>
+          <span><span class="legend-dot" style="background:#8a8f9c;"></span>Unpaid</span>
+          <span><span class="legend-dot" style="background:var(--color-primary);border:1px dashed #fff;"></span>Dashed = pending</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <h3>DCI Consultants</h3>
+      <p>Internal employee portal for contract staff: templates, policies and guides in one place. [PLACEHOLDER] company address / legal entity name.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="templates.html">Templates</a></li>
+        <li><a href="policies.html">Policies</a></li>
+        <li><a href="guides.html">User Guides</a></li>
+        <li><a href="leave.html">Leave</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:hr@placeholder-dci.com">hr@[PLACEHOLDER].com</a></li>
+        <li><a href="mailto:itsupport@placeholder-dci.com">itsupport@[PLACEHOLDER].com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom container">
+    &copy; 2026 DCI Consultants. For internal reference only — no confidential data.
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="js/leave-config.js"></script>
+<script src="js/leave.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
