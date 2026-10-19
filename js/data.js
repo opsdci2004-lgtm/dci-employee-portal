@@ -69,12 +69,12 @@ const TEMPLATES = [
   },
   {
     id: "nda-acknowledgement",
-    title: "NDA Acknowledgement",
-    description: "Non-disclosure agreement acknowledgement required for all contract staff.",
+    title: "Staff Non-Disclosure & Confidentiality Agreement",
+    description: "For DCI permanent employees and DCI-employed outsourced/contract staff assigned to clients in Singapore — covers confidentiality scope, PDPA compliance, device/account security, incident reporting and return of materials, with an acknowledgement sign-off section.",
     category: "Legal & Compliance",
     fileType: "PDF",
     icon: "🔒",
-    file: "assets/docs/nda-acknowledgement.txt"
+    file: "assets/docs/nda-acknowledgement.pdf"
   },
   {
     id: "equipment-request",
