@@ -291,5 +291,85 @@ const FAQS = [
   {
     q: "Who approves my leave application?",
     a: "Your direct manager approves leave requests. HR will confirm the updated balance once approved."
+  },
+  {
+    q: "Staff leave: How much paternity leave does a father get?",
+    a: "4 weeks of Government-Paid Paternity Leave, which employers must give. The father must be lawfully married to the child's mother, have worked for us for at least 3 continuous months, and the child must be a Singapore Citizen. Salary is paid as usual; we claim it back from the Government, capped at S$2,500 a week including CPF."
+  },
+  {
+    q: "Staff leave: What is Shared Parental Leave?",
+    a: "A pool of paid leave the two parents share, on top of maternity and paternity leave: 10 weeks for children born or adopted on or after 1 April 2026 (6 weeks for 1 April 2025 to 31 March 2026). By default it is split equally between the parents; each parent does not get the whole pool. It is Government-paid, capped at S$2,500 a week including CPF."
+  },
+  {
+    q: "Staff leave: How much childcare leave does a parent get?",
+    a: "6 days a year if the youngest Singapore Citizen child is below 7 and the staff member has worked for us for at least 3 continuous months. The first 3 days are paid by us; the next 3 are reimbursed by the Government (up to S$500 a day including CPF). It is pro-rated in the first year of service."
+  },
+  {
+    q: "Staff leave: My youngest child is 7 to 12. What childcare leave do I get?",
+    a: "2 days a year of Extended Childcare Leave, if the child is a Singapore Citizen and you have at least 3 months of service. Both days are Government-paid (up to S$500 a day including CPF) and are not pro-rated."
+  },
+  {
+    q: "Staff leave: Do I get more childcare leave for more children? Can I carry it forward?",
+    a: "Not under the current rules. The limit is 6 days a year in total, however many children you have, and it covers all types of childcare leave. It runs by calendar year (1 January to 31 December) and unused days can't be carried forward."
+  },
+  {
+    q: "Staff leave: My child is not a Singapore Citizen. Do I get childcare leave?",
+    a: "Staff covered by the Employment Act get 2 days of paid childcare leave a year if the child is below 7 and they have worked for us for at least 3 months."
+  },
+  {
+    q: "Staff leave: I heard childcare leave is increasing. When does it start?",
+    a: "At the National Day Rally on 23 August 2026 the Government announced a single new scheme for Singapore Citizen children aged 12 and below: 8 days a year for one child, 10 days for two, 12 days for three or more, with the Government paying for all of it up to the caps. It has not started yet; the start date will be announced after the law is changed. Until then, the current rules above apply."
+  },
+  {
+    q: "Staff leave: How does a staff member apply?",
+    a: "Tell HR as early as possible and give the child's birth certificate. Pay salary as usual during the leave; HR then claims the Government-paid part on the Government-Paid Leave (GPL) Portal."
+  },
+  {
+    q: "Staff leave: Where do I check the latest rules?",
+    a: "The official source is MSF's Government-Paid Leave portal at www.profamilyleave.msf.gov.sg — check there for the current rules, or ask DCI HR if you're not sure which apply to you."
+  },
+  {
+    q: "Hospital insurance (STE UBS staff): Which plan are they on?",
+    a: "Staff deployed to STE UBS only are covered by Great Eastern Group Hospital &amp; Surgical (GHS) Plan 4, with Major Medical. Staff on other clients are not covered by this plan. Plan 4 is a private-hospital plan, and the 70%/80% pro-ration that applies to some other plans does not apply to Plan 4."
+  },
+  {
+    q: "Hospital insurance (STE UBS staff): What ward and room cover do they get?",
+    a: "Room &amp; board: a 4-bed ward in a private hospital, per day for up to 120 days (including ICU). Intensive Care Unit (ICU): up to S$10,000."
+  },
+  {
+    q: "Hospital insurance (STE UBS staff): What is the main limit per stay?",
+    a: "Up to S$15,000 per disability in total for: hospital miscellaneous services (including surgical implants, with 20% co-insurance on implants), surgery, in-hospital doctor's visits (up to 90 days), X-rays, lab tests and specialist consultation within 90 days before admission, treatment up to 90 days after discharge, emergency outpatient treatment and emergency dental treatment due to accident only, miscarriage (including ectopic pregnancy), and home nursing (up to 182 days per policy period)."
+  },
+  {
+    q: "Hospital insurance (STE UBS staff): Are kidney dialysis and cancer treatment covered as outpatient?",
+    a: "Yes. Outpatient kidney dialysis and outpatient cancer treatment are covered up to S$15,000 per policy period (shown as one figure for both in the schedule; check with Great Eastern whether the limit is shared)."
+  },
+  {
+    q: "Hospital insurance (STE UBS staff): What other benefits are there?",
+    a: "Overseas hospitalisation due to accident: 150% of the standard benefits. Parental accommodation: S$100 a day, up to 60 days per disability. Funeral expense: S$10,000. Mental wellness: S$5,000 per policy period. Rehabilitation: S$5,000 (up to 31 days)."
+  },
+  {
+    q: "Hospital insurance (STE UBS staff): Is there hospital cash for a government hospital stay?",
+    a: "Yes, per day for up to 90 days in a Government Restructured Hospital: B2/B2+ ward S$250, C ward S$300. There is no cash benefit for a B1 ward on Plan 4."
+  },
+  {
+    q: "Hospital insurance (STE UBS staff): What does Major Medical add?",
+    a: "Up to S$45,000 per policy period for eligible expenses above the GHS limits, but only if the stay is more than 20 continuous days, or for a major surgery (MOH Table of Surgical Procedures, Table 5B and above). The deductible is as per the basic GHS, and the staff member pays 20% co-insurance. It can be upgraded to Major Medical Plus for an extra premium."
+  },
+  {
+    q: "Hospital insurance (STE UBS staff): Where do these figures come from?",
+    a: "Great Eastern's GHS Schedule of Benefits, Plan 4 column. The policy wording and Great Eastern's decision on each claim take priority over this summary — check the figures again when the policy is renewed."
+  },
+  {
+    q: "Work injury insurance (all staff): Am I covered if I get hurt at work?",
+    a: "Yes. All DCI staff, including those at STE UBS, are covered by DCI's Work Injury Compensation (WICA) insurance with Great Eastern General Insurance. It covers injuries from work anywhere in Singapore for DCI's business, including at the client's site, and elsewhere as the Work Injury Compensation Act allows. It is separate from the hospital insurance above."
+  },
+  {
+    q: "Work injury insurance (all staff): What should I do if I'm injured at work?",
+    a: "Tell your client supervisor and DCI HR straight away, even if the injury seems minor. See a doctor and say the injury happened at work. Keep your medical certificates, receipts and referral letters and send copies to DCI HR. DCI will report the injury and handle the claim with Great Eastern and MOM."
+  },
+  {
+    q: "Work injury insurance (all staff): What can a claim pay for?",
+    a: "Under the Work Injury Compensation Act, a valid claim can cover medical expenses, medical leave wages, and lump-sum compensation for permanent incapacity or death, up to the limits set by MOM. You don't need to prove the company was at fault. See MOM's work injury compensation pages for the current limits."
   }
 ];
