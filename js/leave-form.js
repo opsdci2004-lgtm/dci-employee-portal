@@ -19,24 +19,31 @@ let rowSeq = 0;
 document.addEventListener("DOMContentLoaded", () => {
   addRow();
 
-  document.getElementById("add-row-btn").addEventListener("click", () => {
-    addRow();
-    renderAll();
-  });
+  document.getElementById("add-row-btn").addEventListener("click", () => addRow());
+
+  // One delegated listener on the container — row cards are created once
+  // and never rebuilt while the user is typing/picking a date in them.
+  // Rebuilding on every keystroke (the earlier version did this) destroys
+  // and recreates the focused input, which drops focus after one
+  // character and closes an open date picker mid-selection.
+  const rowsEditor = document.getElementById("rows-editor");
+  rowsEditor.addEventListener("input", handleRowFieldChange);
+  rowsEditor.addEventListener("change", handleRowFieldChange);
+  rowsEditor.addEventListener("click", handleRowClick);
 
   ["lf-name", "lf-department", "lf-month", "lf-al-earned", "lf-al-taken", "lf-mc-earned", "lf-mc-taken"].forEach((id) => {
-    document.getElementById(id).addEventListener("input", renderAll);
+    document.getElementById(id).addEventListener("input", renderPreview);
   });
 
   const now = new Date();
   document.getElementById("lf-month").value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
-  renderAll();
+  renderPreview();
 });
 
 function addRow() {
   rowSeq++;
-  rows.push({
+  const row = {
     id: rowSeq,
     leaveType: "annual",
     startDate: "",
@@ -44,13 +51,112 @@ function addRow() {
     halfDay: false,
     halfPeriod: "AM",
     reason: ""
-  });
+  };
+  rows.push(row);
+  document.getElementById("rows-editor").insertAdjacentHTML("beforeend", rowCardHtml(row));
+  renderPreview();
 }
 
 function removeRow(id) {
   rows = rows.filter((r) => r.id !== id);
+  const card = document.querySelector(`.leave-row-card[data-row="${id}"]`);
+  if (card) card.remove();
   if (rows.length === 0) addRow();
-  renderAll();
+  renderPreview();
+}
+
+function handleRowFieldChange(e) {
+  const el = e.target;
+  const field = el.getAttribute("data-field");
+  if (!field) return;
+  const id = Number(el.getAttribute("data-row"));
+  const row = rows.find((r) => r.id === id);
+  if (!row) return;
+
+  row[field] = el.type === "checkbox" ? el.checked : el.value;
+
+  if (field === "halfDay") {
+    const periodEl = document.querySelector(`[data-half-period-for="${id}"]`);
+    if (periodEl) periodEl.style.display = row.halfDay ? "block" : "none";
+  }
+  if (field === "startDate" || field === "endDate") {
+    updateRowHalfVisibility(row);
+  }
+
+  updateRowDaysLabel(row);
+  renderPreview();
+}
+
+function handleRowClick(e) {
+  const removeId = e.target.getAttribute("data-remove");
+  if (removeId) removeRow(Number(removeId));
+}
+
+function updateRowHalfVisibility(row) {
+  const wrap = document.querySelector(`[data-half-wrap-for="${row.id}"]`);
+  if (!wrap) return;
+  const sameDay = row.startDate && row.endDate && row.startDate === row.endDate;
+  wrap.style.display = sameDay ? "block" : "none";
+  if (!sameDay && row.halfDay) {
+    row.halfDay = false;
+    const checkbox = document.querySelector(`[data-field="halfDay"][data-row="${row.id}"]`);
+    if (checkbox) checkbox.checked = false;
+    const periodEl = document.querySelector(`[data-half-period-for="${row.id}"]`);
+    if (periodEl) periodEl.style.display = "none";
+  }
+}
+
+function updateRowDaysLabel(row) {
+  const { days, warning } = rowWorkingDays(row);
+  const label = document.querySelector(`[data-days-for="${row.id}"]`);
+  if (label) {
+    label.textContent = `${days ? `${days} working day${days === 1 ? "" : "s"}` : ""}${warning ? ` ⚠ ${warning}` : ""}`;
+  }
+}
+
+function rowCardHtml(row) {
+  const sameDay = row.startDate && row.endDate && row.startDate === row.endDate;
+  return `
+      <div class="leave-row-card" data-row="${row.id}">
+        <div class="form-row">
+          <div class="field" style="margin-bottom:10px;">
+            <label>Leave type</label>
+            <select data-field="leaveType" data-row="${row.id}">
+              <option value="annual" ${row.leaveType === "annual" ? "selected" : ""}>Annual Leave</option>
+              <option value="medical" ${row.leaveType === "medical" ? "selected" : ""}>Medical Leave</option>
+              <option value="unpaid" ${row.leaveType === "unpaid" ? "selected" : ""}>Unpaid Leave</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:10px;">
+            <label>Reason</label>
+            <input type="text" data-field="reason" data-row="${row.id}" value="${escapeAttr(row.reason)}" placeholder="e.g. Home leave">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field" style="margin-bottom:10px;">
+            <label>Start date</label>
+            <input type="date" data-field="startDate" data-row="${row.id}" value="${row.startDate}">
+          </div>
+          <div class="field" style="margin-bottom:10px;">
+            <label>End date</label>
+            <input type="date" data-field="endDate" data-row="${row.id}" value="${row.endDate}">
+          </div>
+        </div>
+        <div class="field" data-half-wrap-for="${row.id}" style="margin-bottom:6px;display:${sameDay ? "block" : "none"};">
+          <label style="display:flex;align-items:center;gap:8px;font-weight:600;">
+            <input type="checkbox" data-field="halfDay" data-row="${row.id}" style="width:auto;" ${row.halfDay ? "checked" : ""}>
+            Half day only
+          </label>
+          <select data-field="halfPeriod" data-row="${row.id}" data-half-period-for="${row.id}" style="margin-top:8px;display:${row.halfDay ? "block" : "none"};">
+            <option value="AM" ${row.halfPeriod === "AM" ? "selected" : ""}>Morning (08:30–12:00)</option>
+            <option value="PM" ${row.halfPeriod === "PM" ? "selected" : ""}>Afternoon (13:30–18:00)</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+          <span class="form-hint" data-days-for="${row.id}" style="margin:0;"></span>
+          <button type="button" class="btn btn-outline btn-sm" data-remove="${row.id}">Remove row</button>
+        </div>
+      </div>`;
 }
 
 function calcWorkingDays(startStr, endStr) {
@@ -80,80 +186,6 @@ function rowWorkingDays(row) {
   }
   const days = calcWorkingDays(row.startDate, row.endDate);
   return { days, warning: days === 0 ? "No working days" : "" };
-}
-
-function renderAll() {
-  renderRowsEditor();
-  renderPreview();
-}
-
-function renderRowsEditor() {
-  const wrap = document.getElementById("rows-editor");
-  wrap.innerHTML = rows
-    .map((row) => {
-      const sameDay = row.startDate && row.endDate && row.startDate === row.endDate;
-      const { days, warning } = rowWorkingDays(row);
-      return `
-      <div class="leave-row-card" data-row="${row.id}">
-        <div class="form-row">
-          <div class="field" style="margin-bottom:10px;">
-            <label>Leave type</label>
-            <select data-field="leaveType" data-row="${row.id}">
-              <option value="annual" ${row.leaveType === "annual" ? "selected" : ""}>Annual Leave</option>
-              <option value="medical" ${row.leaveType === "medical" ? "selected" : ""}>Medical Leave</option>
-              <option value="unpaid" ${row.leaveType === "unpaid" ? "selected" : ""}>Unpaid Leave</option>
-            </select>
-          </div>
-          <div class="field" style="margin-bottom:10px;">
-            <label>Reason</label>
-            <input type="text" data-field="reason" data-row="${row.id}" value="${escapeAttr(row.reason)}" placeholder="e.g. Home leave">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="field" style="margin-bottom:10px;">
-            <label>Start date</label>
-            <input type="date" data-field="startDate" data-row="${row.id}" value="${row.startDate}">
-          </div>
-          <div class="field" style="margin-bottom:10px;">
-            <label>End date</label>
-            <input type="date" data-field="endDate" data-row="${row.id}" value="${row.endDate}">
-          </div>
-        </div>
-        ${sameDay ? `
-        <div class="field" style="margin-bottom:6px;">
-          <label style="display:flex;align-items:center;gap:8px;font-weight:600;">
-            <input type="checkbox" data-field="halfDay" data-row="${row.id}" style="width:auto;" ${row.halfDay ? "checked" : ""}>
-            Half day only
-          </label>
-          ${row.halfDay ? `
-          <select data-field="halfPeriod" data-row="${row.id}" style="margin-top:8px;">
-            <option value="AM" ${row.halfPeriod === "AM" ? "selected" : ""}>Morning (08:30–12:00)</option>
-            <option value="PM" ${row.halfPeriod === "PM" ? "selected" : ""}>Afternoon (13:30–18:00)</option>
-          </select>` : ""}
-        </div>` : ""}
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
-          <span class="form-hint" style="margin:0;">${days ? `${days} working day${days === 1 ? "" : "s"}` : ""}${warning ? ` ⚠ ${warning}` : ""}</span>
-          <button type="button" class="btn btn-outline btn-sm" data-remove="${row.id}">Remove row</button>
-        </div>
-      </div>`;
-    })
-    .join("");
-
-  wrap.querySelectorAll("[data-field]").forEach((el) => {
-    const evt = el.type === "checkbox" ? "change" : el.tagName === "SELECT" ? "change" : "input";
-    el.addEventListener(evt, (e) => {
-      const id = Number(el.getAttribute("data-row"));
-      const field = el.getAttribute("data-field");
-      const row = rows.find((r) => r.id === id);
-      if (!row) return;
-      row[field] = el.type === "checkbox" ? el.checked : el.value;
-      renderAll();
-    });
-  });
-
-  wrap.querySelectorAll("[data-remove]").forEach((btn) => {
-    btn.addEventListener("click", () => removeRow(Number(btn.getAttribute("data-remove"))));
-  });
 }
 
 function renderPreview() {

@@ -776,6 +776,15 @@ summary:focus-visible {
 .calendar-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
 
+.leave-row-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 14px;
+}
+
 /* ---------- Printable Leave Application Form ---------- */
 .leave-form-doc {
   font-family: Arial, Helvetica, sans-serif;
