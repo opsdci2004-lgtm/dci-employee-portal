@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
   rowsEditor.addEventListener("change", handleClaimFieldChange);
   rowsEditor.addEventListener("click", handleClaimRowClick);
 
-  ["cf-name", "cf-site", "cf-period"].forEach((id) => {
+  ["cf-name", "cf-site", "cf-supervisor", "cf-period"].forEach((id) => {
     document.getElementById(id).addEventListener("input", renderClaimPreview);
   });
 
@@ -154,6 +154,7 @@ function claimRowCardHtml(row) {
 function renderClaimPreview() {
   const staffName = document.getElementById("cf-name").value.trim();
   const site = document.getElementById("cf-site").value.trim();
+  const supervisorName = document.getElementById("cf-supervisor").value.trim();
   const periodVal = document.getElementById("cf-period").value;
   const periodLabel = periodVal
     ? (() => {
@@ -183,6 +184,7 @@ function renderClaimPreview() {
   document.getElementById("claimFormPrint").innerHTML = buildClaimFormHtml({
     staffName,
     site,
+    supervisorName,
     periodLabel,
     rows: printRows,
     total,
@@ -207,7 +209,7 @@ function formatClaimDate(iso) {
   return `${d.getDate()}-${months[d.getMonth()]}-${String(d.getFullYear()).slice(-2)}`;
 }
 
-function buildClaimFormHtml({ staffName, site, periodLabel, rows, total, mileageTaxiTotal }) {
+function buildClaimFormHtml({ staffName, site, supervisorName, periodLabel, rows, total, mileageTaxiTotal }) {
   const categoryTag = { mileage: "Mileage", taxi: "Taxi" };
   const tableRows = rows
     .map((r) => {
@@ -273,7 +275,7 @@ function buildClaimFormHtml({ staffName, site, periodLabel, rows, total, mileage
       <div>
         <div class="lf-caption">Approved by</div>
         <div class="lf-field-row"><span class="lf-field-label">Supervisor's Signature:</span><span class="lf-line"></span></div>
-        <div class="lf-field-row"><span class="lf-field-label">Supervisor's Name:</span><span class="lf-line"></span></div>
+        <div class="lf-field-row"><span class="lf-field-label">Supervisor's Name:</span><span class="lf-line">${escapeHtmlClaim(supervisorName || "")}</span></div>
         <div class="lf-field-row"><span class="lf-field-label">Date:</span><span class="lf-line"></span></div>
       </div>
     </div>

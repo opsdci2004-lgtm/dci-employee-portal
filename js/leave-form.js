@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   rowsEditor.addEventListener("change", handleRowFieldChange);
   rowsEditor.addEventListener("click", handleRowClick);
 
-  ["lf-name", "lf-department", "lf-month", "lf-al-earned", "lf-al-taken", "lf-mc-earned", "lf-mc-taken"].forEach((id) => {
+  ["lf-name", "lf-department", "lf-supervisor", "lf-month", "lf-al-earned", "lf-al-taken", "lf-mc-earned", "lf-mc-taken"].forEach((id) => {
     document.getElementById(id).addEventListener("input", renderPreview);
   });
 
@@ -197,6 +197,7 @@ function rowWorkingDays(row) {
 function renderPreview() {
   const staffName = document.getElementById("lf-name").value.trim();
   const department = document.getElementById("lf-department").value.trim();
+  const supervisorName = document.getElementById("lf-supervisor").value.trim();
   const monthVal = document.getElementById("lf-month").value;
   const alEarned = Number(document.getElementById("lf-al-earned").value) || 0;
   const alTaken = Number(document.getElementById("lf-al-taken").value) || 0;
@@ -232,6 +233,7 @@ function renderPreview() {
   document.getElementById("leaveFormPrint").innerHTML = buildLeaveFormHtml({
     staffName,
     department,
+    supervisorName,
     monthLabel,
     rows: printRows,
     summary
@@ -272,7 +274,7 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-function buildLeaveFormHtml({ staffName, department, monthLabel, rows, summary }) {
+function buildLeaveFormHtml({ staffName, department, supervisorName, monthLabel, rows, summary }) {
   const typeLabel = {
     annual: "Annual Leave",
     medical: "Medical Leave",
@@ -373,7 +375,7 @@ function buildLeaveFormHtml({ staffName, department, monthLabel, rows, summary }
       <div>
         <div class="lf-caption">Approved by</div>
         <div class="lf-field-row"><span class="lf-field-label">Supervisor's Signature:</span><span class="lf-line"></span></div>
-        <div class="lf-field-row"><span class="lf-field-label">Supervisor's Name:</span><span class="lf-line"></span></div>
+        <div class="lf-field-row"><span class="lf-field-label">Supervisor's Name:</span><span class="lf-line">${escapeHtml(supervisorName || "")}</span></div>
         <div class="lf-field-row"><span class="lf-field-label">Date:</span><span class="lf-line"></span></div>
       </div>
     </div>
