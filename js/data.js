@@ -36,9 +36,9 @@ const TEMPLATES = [
     title: "Company Expense Claim Form",
     description: "Approved expense/mileage claim form — get it signed by your supervisor, then email it with receipts and submit the claim in Infotech.",
     category: "Finance & Payroll",
-    fileType: "PDF",
+    fileType: "DOCX",
     icon: "💳",
-    file: "assets/docs/company-expense-claim-form.pdf"
+    file: "assets/docs/company-expense-claim-form.docx"
   },
   {
     id: "onboarding-checklist",
