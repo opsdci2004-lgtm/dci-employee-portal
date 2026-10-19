@@ -128,6 +128,8 @@ function rowCardHtml(row) {
               <option value="childcare" ${row.leaveType === "childcare" ? "selected" : ""}>Childcare Leave (GPCL/ECL)</option>
               <option value="ns" ${row.leaveType === "ns" ? "selected" : ""}>NS / Reservist Leave</option>
               <option value="compassionate" ${row.leaveType === "compassionate" ? "selected" : ""}>Compassionate Leave</option>
+              <option value="marriage" ${row.leaveType === "marriage" ? "selected" : ""}>Marriage Leave</option>
+              <option value="offinlieu" ${row.leaveType === "offinlieu" ? "selected" : ""}>Off-in-lieu</option>
               <option value="unpaid" ${row.leaveType === "unpaid" ? "selected" : ""}>Unpaid Leave</option>
             </select>
           </div>
@@ -278,6 +280,8 @@ function buildLeaveFormHtml({ staffName, department, monthLabel, rows, summary }
     childcare: "Childcare Leave (GPCL/ECL)",
     ns: "NS / Reservist Leave",
     compassionate: "Compassionate Leave",
+    marriage: "Marriage Leave",
+    offinlieu: "Off-in-lieu",
     unpaid: "Unpaid Leave"
   };
 
