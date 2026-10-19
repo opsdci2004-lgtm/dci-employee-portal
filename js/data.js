@@ -248,7 +248,7 @@ const GUIDES = [
       "Use the search bar — or the topic dropdown — to search articles, topics or keywords, including leave management, applying for leave, and leave balances.",
       "Browse the \"Highest Rated Articles\" section for commonly needed how-tos, or search directly for the leave topic you need."
     ],
-    tip: "Infotech's own Help Portal is kept up to date directly by Infotech, so it's the most current source for exact, step-by-step leave-module instructions. If you still can't find what you need, ask your DCI reporting manager or HR contact."
+    tip: "Infotech's own Help Portal is kept up to date directly by Infotech, so it's the most current source for exact, step-by-step leave-module instructions. If you still can't find what you need, ask your DCI reporting manager or HR contact.<br><br>📄 <a href=\"assets/docs/infotech-user-guide.pdf\" download>Download the Infotech User Guide (PDF)</a>"
   },
   {
     id: "onboarding-first-two-weeks",
