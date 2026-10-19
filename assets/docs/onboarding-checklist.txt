@@ -1,0 +1,8 @@
+DCI CONSULTANTS — ONBOARDING CHECKLIST [PLACEHOLDER FILE]
+
+This is a placeholder for the real Onboarding Checklist (.pdf).
+Replace this file with the actual document and update the "file"
+path for the "onboarding-checklist" entry in js/data.js if the filename changes.
+
+Suggested items: Sign NDA | Receive equipment | Set up MFA | Complete
+compliance training | Meet project lead | Review relevant policies

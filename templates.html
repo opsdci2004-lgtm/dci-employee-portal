@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Templates | DCI Consultants Employee Portal</title>
+<meta name="description" content="Download company templates: timesheet, leave application, expense claim, onboarding checklist and NDA acknowledgement.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="confidentiality-banner">
+  ⚠ This site is for general reference only. Do not upload or enter confidential, personal or client data — it is hosted on a public static site.
+</div>
+
+<header class="site-header">
+  <div class="container nav-wrap">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">DCI</span>
+      DCI Consultants
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="templates.html" aria-current="page">Templates</a>
+      <a href="policies.html">Policies</a>
+      <a href="guides.html">User Guides</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" type="button" aria-label="Toggle dark mode">🌙</button>
+      <button class="hamburger" type="button" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container page-hero-grid">
+    <div class="fade-up">
+      <span class="hero-eyebrow">Company Templates</span>
+      <h1>Download the forms you need, instantly</h1>
+      <p class="lead">Timesheets, leave applications, expense claims and more — search or filter by category to find the right template.</p>
+    </div>
+    <div class="page-hero-media fade-up">
+      <img
+        src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=900&q=80"
+        alt="Close-up of paperwork and a laptop on a desk, representing company forms"
+        loading="lazy"
+        onerror="handleImgError(this)">
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div class="toolbar fade-up">
+      <div class="search-field">
+        <span aria-hidden="true">🔍</span>
+        <label for="template-search" class="visually-hidden">Search templates</label>
+        <input type="text" id="template-search" placeholder="Search templates (e.g. leave, expense, NDA)...">
+      </div>
+      <div class="filter-chips" id="template-filters" role="group" aria-label="Filter templates by category"></div>
+    </div>
+
+    <p class="result-count" id="template-result-count">Loading templates...</p>
+
+    <div class="template-grid" id="template-grid"></div>
+
+    <div class="empty-state" id="template-empty">
+      <p>No templates match your search. Try a different keyword or category.</p>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <h3>DCI Consultants</h3>
+      <p>Internal employee portal for contract staff: templates, policies and guides in one place. [PLACEHOLDER] company address / legal entity name.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="templates.html">Templates</a></li>
+        <li><a href="policies.html">Policies</a></li>
+        <li><a href="guides.html">User Guides</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:hr@placeholder-dci.com">hr@[PLACEHOLDER].com</a></li>
+        <li><a href="mailto:itsupport@placeholder-dci.com">itsupport@[PLACEHOLDER].com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom container">
+    &copy; 2026 DCI Consultants. For internal reference only — no confidential data.
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

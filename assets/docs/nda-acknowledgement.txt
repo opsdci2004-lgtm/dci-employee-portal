@@ -1,0 +1,8 @@
+DCI CONSULTANTS — NDA ACKNOWLEDGEMENT [PLACEHOLDER FILE]
+
+This is a placeholder for the real NDA Acknowledgement (.pdf).
+Replace this file with the actual legal document and update the "file"
+path for the "nda-acknowledgement" entry in js/data.js if the filename changes.
+
+[PLACEHOLDER] Insert the full non-disclosure agreement text, to be
+reviewed and signed by all contract employees before accessing client data.

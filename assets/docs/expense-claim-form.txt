@@ -1,0 +1,7 @@
+DCI CONSULTANTS — EXPENSE CLAIM FORM [PLACEHOLDER FILE]
+
+This is a placeholder for the real Expense Claim Form (.xlsx).
+Replace this file with the actual spreadsheet and update the "file"
+path for the "expense-claim" entry in js/data.js if the filename changes.
+
+Suggested columns: Date | Category | Description | Amount | Currency | Receipt Attached (Y/N)

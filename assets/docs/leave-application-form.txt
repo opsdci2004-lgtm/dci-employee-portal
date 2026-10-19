@@ -1,0 +1,8 @@
+DCI CONSULTANTS — LEAVE APPLICATION FORM [PLACEHOLDER FILE]
+
+This is a placeholder for the real Leave Application Form (.docx).
+Replace this file with the actual document and update the "file"
+path for the "leave-application" entry in js/data.js if the filename changes.
+
+Suggested fields: Employee Name | Contract ID | Leave Type | Start Date |
+End Date | Reason | Manager Approval | HR Approval
