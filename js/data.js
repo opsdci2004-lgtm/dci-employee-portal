@@ -33,12 +33,12 @@ const TEMPLATES = [
   },
   {
     id: "expense-claim",
-    title: "Expense Claim Form",
-    description: "Submit reimbursable business expenses with receipts attached for Finance approval.",
+    title: "Company Expense Claim Form",
+    description: "Approved expense/mileage claim form — get it signed by your supervisor, then email it with receipts and submit the claim in Infotech.",
     category: "Finance & Payroll",
-    fileType: "XLSX",
+    fileType: "PDF",
     icon: "💳",
-    file: "assets/docs/expense-claim-form.txt"
+    file: "assets/docs/company-expense-claim-form.pdf"
   },
   {
     id: "onboarding-checklist",
