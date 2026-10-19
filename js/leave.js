@@ -718,7 +718,15 @@ class LeaveApp {
 }
 
 function toISO(d) {
-  return d.toISOString().slice(0, 10);
+  // Deliberately NOT toISOString() — that converts to UTC and silently
+  // shifts the calendar date by a day in any timezone ahead of UTC
+  // (including Singapore), which would exclude public holidays on the
+  // wrong day. These Date objects represent local calendar days, so we
+  // serialize them back using the local getters.
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 function formatLfDate(iso) {

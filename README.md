@@ -1,10 +1,9 @@
 # DCI Consultants — Employee Portal
 
-A mostly-static HTML/CSS/JavaScript website for DCI Consultants contract
-employees: company templates, policies, user guides, and a Leave Monitoring
-App. Every page except Leave needs no backend at all; the Leave app talks
-to a small Supabase (Postgres) backend for real shared data — see
-[Leave Monitoring App setup](#leave-monitoring-app-setup) below.
+A fully static HTML/CSS/JavaScript website for DCI Consultants contract
+employees: company templates, policies, user guides, and a Leave
+Application Form. No backend, no build step, no npm dependencies —
+open `index.html` or deploy as-is to any static host.
 
 ## Folder structure
 
@@ -14,17 +13,22 @@ about.html             About page
 templates.html         Company Templates (downloadable forms)
 policies.html           Company Policies (accordion)
 guides.html             Employee User Guides + FAQ
-leave.html              Leave Monitoring App (apply / approve / team calendar)
+leave.html              Leave Application Form (fill in, print, sign)
 css/styles.css          All styling (shared by every page)
 js/main.js              Nav, dark mode, search/filter, accordions (pages 1–5)
 js/data.js               Content for templates, policies, guides and FAQ
-js/leave-config.js       Supabase project URL + anon key for the Leave app
-js/leave.js               All Leave app behaviour (auth, forms, approvals, calendar)
-supabase/leave-schema.sql Database schema + security policies for the Leave app
+js/leave-form.js          Leave page: row entry, working-day math, print preview
 assets/images/          Local image assets (fallback is a CSS gradient block)
 assets/docs/            Placeholder downloadable files for the Templates page
 README.md               This file
 ```
+
+**Parked for later** — a database-backed version of the Leave page (real
+accounts, a shared manager approval queue, a team calendar) was built
+against Supabase and then shelved in favour of the simpler print-only
+flow above. Its code is kept, unused, in `js/leave.js`, `js/leave-config.js`
+and `supabase/leave-schema.sql` in case it's worth reviving later — see
+[Leave app: current vs. parked database version](#leave-app-current-vs-parked-database-version).
 
 ## Previewing locally
 
@@ -85,77 +89,50 @@ To add a new item:
   via the `onerror="handleImgError(this)"` attribute already on each
   `<img>` tag.
 
-## Leave Monitoring App setup
+## Leave Application Form (`leave.html`)
 
-`leave.html` is the one page that is **not** a static document — it lets
-employees apply for leave and managers approve it, with real data shared
-between everyone who signs in. That needs a backend, so it uses
-[Supabase](https://supabase.com) (a free-tier hosted Postgres database with
-built-in login).
+This page has no login and no database — it's a data-entry form that
+fills in a live preview of DCI Consultants' official leave form as you
+type, purely so you can print it. Nothing is saved anywhere; refreshing
+the page clears it.
 
-### 1. Run the database schema (one-time)
-1. Open your Supabase project → **SQL Editor** → **New query**.
-2. Paste the entire contents of `supabase/leave-schema.sql` and click **Run**.
-   This creates the `profiles`, `leave_requests` and `public_holidays`
-   tables, wires up a trigger that auto-creates a profile when someone
-   signs up, sets up the access-control (Row Level Security) rules, and
-   seeds a starter Singapore public-holiday list for 2026 — edit or add
-   to that list directly in the table (Table Editor → `public_holidays`).
-3. It's safe to re-run this script later (e.g. after an update) — it won't
-   duplicate tables or holidays.
+1. **Your details** — name, department, and the month leave is applied for.
+2. **Your current leave balance** — entered manually (Annual/Medical Leave
+   earned and already taken this year), since there's no database to look
+   these up automatically. Default both "earned" fields to 14 days or
+   whatever your real entitlement is.
+3. **Leave dates** — add one row per block of leave (type, start/end date,
+   reason). Working days are calculated automatically, excluding weekends
+   and the Singapore public holidays hard-coded in `js/leave-form.js`
+   (`SG_PUBLIC_HOLIDAYS_2026`) — update that list for future years, or
+   add more public holidays for your context.
+4. **Print & sign** — the form preview updates live; click **Print / Save
+   as PDF** (uses the browser's native print dialog — no PDF library
+   involved) and hand the signed printout to a manager.
+5. **After approval** — a button links out to the real **Infotech Leave
+   Management System** so the now-approved leave gets logged there too:
+   `https://login-infotech.com/Login?rUrl=...`. Update that URL in
+   `leave.html` if it ever changes.
 
-### 2. Connection details
-`js/leave-config.js` already points at the project used for this build:
-```js
-const SUPABASE_URL = "https://vwfntktsvbprwjebhiwj.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_...";
-```
-The anon key is a **public** client-side key — safe to commit and ship in
-the browser. All real access control happens server-side via the Row
-Level Security policies in `leave-schema.sql`, not by keeping this key
-secret. If you ever point this app at a different Supabase project,
-update both values here.
+### Leave app: current vs. parked database version
+An earlier version of this page used [Supabase](https://supabase.com) for
+real accounts, a shared manager approval queue and a team calendar — more
+powerful, but needing a backend (contradicting the rest of this site's
+"plain static, no backend" design). That version's code is still in the
+repo, unused by any page right now:
+- `js/leave.js` / `js/leave-config.js` — the Supabase-backed app logic and connection details.
+- `supabase/leave-schema.sql` — the database schema + Row Level Security policies it depends on.
 
-### 3. How accounts and roles work
-- Anyone can create an account from the "Create account" tab on the Leave
-  page using their work email — this automatically creates an `employee`
-  profile with 14 days annual and 14 days medical entitlement.
-- **Promoting someone to manager** is deliberately not possible from the
-  browser (to stop an employee making themselves a manager). After they
-  sign up once, an admin runs this in the Supabase SQL Editor:
-  ```sql
-  update public.profiles set role = 'manager' where email = 'someone@example.com';
-  ```
-- To change someone's leave entitlement, update their row directly in
-  **Table Editor → profiles** (`annual_entitlement`, `medical_entitlement`).
-- By default Supabase requires email confirmation before first sign-in.
-  For an internal tool this is usually unnecessary friction — you can turn
-  it off under **Authentication → Providers → Email → "Confirm email"**.
+To revive it: swap `leave.html`'s closing scripts back to
+`leave-config.js` + `leave.js` (instead of `leave-form.js`), restore the
+sign-in/approval-queue/calendar markup (see git history around the
+"Add Leave Monitoring App" commit), and follow the setup steps that were
+previously documented here (run `leave-schema.sql` in the Supabase SQL
+Editor once, promote a manager via `update public.profiles set role =
+'manager' where email = '...'`, optionally turn off "Confirm email" under
+Authentication → Providers → Email).
 
-### 4. What the app does
-- **Apply for leave**: pick annual / medical / unpaid, a date range and a
-  reason. Working days (excluding weekends and the `public_holidays`
-  table) are calculated live as you pick dates.
-- **Balance card**: shows entitlement, taken and remaining days per leave
-  type for the current calendar year, recalculated from approved requests.
-- **Manager approval queue**: anyone with `role = 'manager'` sees every
-  pending request company-wide, with approve/reject buttons and an
-  optional comment that the employee sees on their own request.
-- **Team calendar**: a month grid (manager view) showing everyone's
-  approved (solid) and pending (dashed) leave, to spot overlaps before
-  approving.
-- **Printable leave application form**: pick a month under "Print leave
-  application form" and it fills in DCI Consultants' real paper leave
-  form (name, department, each leave row with dates/times/reason, the
-  AL/MC earned-taken-applied-balance summary, and blank signature lines)
-  so the employee can print it, sign it and hand it to their manager.
-  Uses the browser's own print dialog — no PDF library involved; choose
-  "Save as PDF" as the destination if a PDF file is needed. If you
-  already ran `leave-schema.sql` before this feature existed, re-run the
-  updated file once — it adds a `department` column and a half-day field
-  without touching any existing data.
-
-
+## Deploying
 
 ### GitHub Pages
 1. Push this folder to a GitHub repository.
@@ -177,22 +154,20 @@ works correctly whether it's served from a domain root or a subfolder.
 ## Security note — please read
 
 Free static hosting (GitHub Pages, Netlify, etc.) is **public on the
-internet by default**. The Home, About, Templates, Policies and Guides
-pages have no backend or login at all, so:
+internet by default**. Every page, including the Leave Application Form,
+has no backend or login at all, so:
 
 - **Do not** put confidential company data, client data or personal
   employee data (salaries, ID numbers, medical info, etc.) anywhere on
-  those pages. A banner on every page reminds visitors of this.
+  this site. A banner on every page reminds visitors of this.
 - **Do not** attempt to "fake" a login or password screen with
   JavaScript — client-side checks like that are trivially bypassed and
   give a false sense of security.
-
-The **Leave Monitoring App** (`leave.html`) is the one exception: it has
-real accounts (Supabase Auth) and real server-side access control (Row
-Level Security — see `supabase/leave-schema.sql`), so employees only ever
-see their own requests and managers see the team's. Even so, keep leave
-reasons brief and avoid pasting detailed medical information, since this
-is still an internal convenience tool, not a HIPAA/PDPA-grade HR system.
+- The Leave page keeps nothing entered into it anywhere — it only exists
+  in the browser tab while filling in the form, to populate a printout.
+  Still, keep leave reasons brief and avoid detailed medical information,
+  since the printed page itself is a physical document someone will carry
+  around and hand to a manager.
 
 If real access control is needed later, consider one of these instead:
 - **Cloudflare Access** — put the whole site behind Cloudflare's

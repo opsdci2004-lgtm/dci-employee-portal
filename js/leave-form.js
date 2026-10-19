@@ -1,0 +1,345 @@
+/* =====================================================
+   DCI Consultants — Leave Application Form (data entry only)
+   No login, no database — everything lives in the browser tab
+   while you fill the form in, purely to populate a printable
+   copy of the official leave form. Nothing is saved; refreshing
+   the page clears it. Once a manager has signed the printed
+   form, use the Infotech link to log the approved leave.
+   ===================================================== */
+
+const SG_PUBLIC_HOLIDAYS_2026 = new Set([
+  "2026-01-01", "2026-02-17", "2026-02-18", "2026-03-21", "2026-04-03",
+  "2026-05-01", "2026-05-27", "2026-05-31", "2026-08-09", "2026-11-08",
+  "2026-12-25"
+]);
+
+let rows = [];
+let rowSeq = 0;
+
+document.addEventListener("DOMContentLoaded", () => {
+  addRow();
+
+  document.getElementById("add-row-btn").addEventListener("click", () => {
+    addRow();
+    renderAll();
+  });
+
+  ["lf-name", "lf-department", "lf-month", "lf-al-earned", "lf-al-taken", "lf-mc-earned", "lf-mc-taken"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", renderAll);
+  });
+
+  const now = new Date();
+  document.getElementById("lf-month").value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+  renderAll();
+});
+
+function addRow() {
+  rowSeq++;
+  rows.push({
+    id: rowSeq,
+    leaveType: "annual",
+    startDate: "",
+    endDate: "",
+    halfDay: false,
+    halfPeriod: "AM",
+    reason: ""
+  });
+}
+
+function removeRow(id) {
+  rows = rows.filter((r) => r.id !== id);
+  if (rows.length === 0) addRow();
+  renderAll();
+}
+
+function calcWorkingDays(startStr, endStr) {
+  if (!startStr || !endStr) return 0;
+  const start = new Date(startStr + "T00:00:00");
+  const end = new Date(endStr + "T00:00:00");
+  if (end < start) return 0;
+  let count = 0;
+  const d = new Date(start);
+  while (d <= end) {
+    const day = d.getDay();
+    const iso = toISO(d);
+    if (day !== 0 && day !== 6 && !SG_PUBLIC_HOLIDAYS_2026.has(iso)) count++;
+    d.setDate(d.getDate() + 1);
+  }
+  return count;
+}
+
+function rowWorkingDays(row) {
+  if (!row.startDate || !row.endDate) return { days: 0, warning: "" };
+  if (row.halfDay && row.startDate === row.endDate) {
+    const day = new Date(row.startDate + "T00:00:00").getDay();
+    if (day === 0 || day === 6 || SG_PUBLIC_HOLIDAYS_2026.has(row.startDate)) {
+      return { days: 0, warning: "Weekend/holiday" };
+    }
+    return { days: 0.5, warning: "" };
+  }
+  const days = calcWorkingDays(row.startDate, row.endDate);
+  return { days, warning: days === 0 ? "No working days" : "" };
+}
+
+function renderAll() {
+  renderRowsEditor();
+  renderPreview();
+}
+
+function renderRowsEditor() {
+  const wrap = document.getElementById("rows-editor");
+  wrap.innerHTML = rows
+    .map((row) => {
+      const sameDay = row.startDate && row.endDate && row.startDate === row.endDate;
+      const { days, warning } = rowWorkingDays(row);
+      return `
+      <div class="leave-row-card" data-row="${row.id}">
+        <div class="form-row">
+          <div class="field" style="margin-bottom:10px;">
+            <label>Leave type</label>
+            <select data-field="leaveType" data-row="${row.id}">
+              <option value="annual" ${row.leaveType === "annual" ? "selected" : ""}>Annual Leave</option>
+              <option value="medical" ${row.leaveType === "medical" ? "selected" : ""}>Medical Leave</option>
+              <option value="unpaid" ${row.leaveType === "unpaid" ? "selected" : ""}>Unpaid Leave</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:10px;">
+            <label>Reason</label>
+            <input type="text" data-field="reason" data-row="${row.id}" value="${escapeAttr(row.reason)}" placeholder="e.g. Home leave">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field" style="margin-bottom:10px;">
+            <label>Start date</label>
+            <input type="date" data-field="startDate" data-row="${row.id}" value="${row.startDate}">
+          </div>
+          <div class="field" style="margin-bottom:10px;">
+            <label>End date</label>
+            <input type="date" data-field="endDate" data-row="${row.id}" value="${row.endDate}">
+          </div>
+        </div>
+        ${sameDay ? `
+        <div class="field" style="margin-bottom:6px;">
+          <label style="display:flex;align-items:center;gap:8px;font-weight:600;">
+            <input type="checkbox" data-field="halfDay" data-row="${row.id}" style="width:auto;" ${row.halfDay ? "checked" : ""}>
+            Half day only
+          </label>
+          ${row.halfDay ? `
+          <select data-field="halfPeriod" data-row="${row.id}" style="margin-top:8px;">
+            <option value="AM" ${row.halfPeriod === "AM" ? "selected" : ""}>Morning (08:30–12:00)</option>
+            <option value="PM" ${row.halfPeriod === "PM" ? "selected" : ""}>Afternoon (13:30–18:00)</option>
+          </select>` : ""}
+        </div>` : ""}
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+          <span class="form-hint" style="margin:0;">${days ? `${days} working day${days === 1 ? "" : "s"}` : ""}${warning ? ` ⚠ ${warning}` : ""}</span>
+          <button type="button" class="btn btn-outline btn-sm" data-remove="${row.id}">Remove row</button>
+        </div>
+      </div>`;
+    })
+    .join("");
+
+  wrap.querySelectorAll("[data-field]").forEach((el) => {
+    const evt = el.type === "checkbox" ? "change" : el.tagName === "SELECT" ? "change" : "input";
+    el.addEventListener(evt, (e) => {
+      const id = Number(el.getAttribute("data-row"));
+      const field = el.getAttribute("data-field");
+      const row = rows.find((r) => r.id === id);
+      if (!row) return;
+      row[field] = el.type === "checkbox" ? el.checked : el.value;
+      renderAll();
+    });
+  });
+
+  wrap.querySelectorAll("[data-remove]").forEach((btn) => {
+    btn.addEventListener("click", () => removeRow(Number(btn.getAttribute("data-remove"))));
+  });
+}
+
+function renderPreview() {
+  const staffName = document.getElementById("lf-name").value.trim();
+  const department = document.getElementById("lf-department").value.trim();
+  const monthVal = document.getElementById("lf-month").value;
+  const alEarned = Number(document.getElementById("lf-al-earned").value) || 0;
+  const alTaken = Number(document.getElementById("lf-al-taken").value) || 0;
+  const mcEarned = Number(document.getElementById("lf-mc-earned").value) || 0;
+  const mcTaken = Number(document.getElementById("lf-mc-taken").value) || 0;
+
+  const monthLabel = monthVal
+    ? new Date(`${monthVal}-01T00:00:00`).toLocaleDateString(undefined, { month: "long", year: "numeric" })
+    : "—";
+
+  const printRows = rows
+    .filter((r) => r.startDate && r.endDate)
+    .map((r) => {
+      const { days } = rowWorkingDays(r);
+      return {
+        leave_type: r.leaveType,
+        working_days: days,
+        start_date: r.startDate,
+        end_date: r.endDate,
+        reason: r.reason,
+        half_day_period: r.halfDay && r.startDate === r.endDate ? r.halfPeriod : null
+      };
+    });
+
+  const appliedAnnual = printRows.filter((r) => r.leave_type === "annual").reduce((s, r) => s + r.working_days, 0);
+  const appliedMedical = printRows.filter((r) => r.leave_type === "medical").reduce((s, r) => s + r.working_days, 0);
+
+  const summary = {
+    annual: { earned: alEarned, taken: alTaken, applied: appliedAnnual, balance: alEarned - alTaken - appliedAnnual },
+    medical: { earned: mcEarned, taken: mcTaken, applied: appliedMedical, balance: mcEarned - mcTaken - appliedMedical }
+  };
+
+  document.getElementById("leaveFormPrint").innerHTML = buildLeaveFormHtml({
+    staffName,
+    department,
+    monthLabel,
+    rows: printRows,
+    summary
+  });
+}
+
+function toISO(d) {
+  // Deliberately NOT toISOString() — that converts to UTC and silently
+  // shifts the calendar date by a day in any timezone ahead of UTC
+  // (including Singapore), which would exclude public holidays on the
+  // wrong day. These Date objects represent local calendar days, so we
+  // serialize them back using the local getters.
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function formatLfDate(iso) {
+  const d = new Date(iso + "T00:00:00");
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${d.getDate()}-${months[d.getMonth()]}-${String(d.getFullYear()).slice(-2)}`;
+}
+
+function lfTimes(row) {
+  if (row.half_day_period === "AM") return { from: "0830", to: "1200" };
+  if (row.half_day_period === "PM") return { from: "1330", to: "1800" };
+  return { from: "0830", to: "1800" };
+}
+
+function escapeAttr(str) {
+  return escapeHtml(str).replace(/"/g, "&quot;");
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str == null ? "" : String(str);
+  return div.innerHTML;
+}
+
+function buildLeaveFormHtml({ staffName, department, monthLabel, rows, summary }) {
+  const typeLabel = { annual: "Annual Leave", medical: "Medical Leave", unpaid: "Unpaid Leave" };
+
+  const tableRows = rows
+    .map((r) => {
+      const t = lfTimes(r);
+      return `
+      <tr>
+        <td>${typeLabel[r.leave_type]}</td>
+        <td class="lf-num">${r.working_days}</td>
+        <td class="lf-num">${formatLfDate(r.start_date)}<br>${t.from}</td>
+        <td class="lf-num">${formatLfDate(r.end_date)}<br>${t.to}</td>
+        <td>${escapeHtml(r.reason)}</td>
+      </tr>`;
+    })
+    .join("");
+
+  const blankRows = Array.from({ length: Math.max(0, 6 - rows.length) })
+    .map(() => `<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>`)
+    .join("");
+
+  return `
+  <div class="leave-form-doc">
+    <h1>LEAVE APPLICATION FORM</h1>
+
+    <div class="lf-meta">
+      <div><span class="lf-label">Name of Staff:</span> ${escapeHtml(staffName || "")}</div>
+      <div><span class="lf-label">Department:</span> ${escapeHtml(department || "")}</div>
+    </div>
+    <div class="lf-month">Leave Applied for the Month of: ${monthLabel}</div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Type of Leave</th>
+          <th>Number of Days</th>
+          <th>Period of Leave<br>From</th>
+          <th>Period of Leave<br>To</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${tableRows}
+        ${blankRows}
+      </tbody>
+    </table>
+
+    <div class="lf-contact">
+      During overseas/long leave period, please state contact details:<br>
+      Landline:<span class="lf-line-inline"></span> &nbsp; Mobile:<span class="lf-line-inline"></span>
+    </div>
+
+    <div class="lf-two-col">
+      <div>
+        <table class="lf-legend-table">
+          <tr><td colspan="2"><strong>Type of Leave *</strong></td></tr>
+          <tr><td>MC</td><td>Medical Leave</td></tr>
+          <tr><td>AL</td><td>Annual Leave</td></tr>
+          <tr><td>AML</td><td>Taking Leave in the Morning</td></tr>
+          <tr><td>PML</td><td>Taking Leave in the Afternoon</td></tr>
+          <tr><td>UPL</td><td>Unpaid Leave</td></tr>
+          <tr><td>RSV</td><td>Reservist Medical Leave</td></tr>
+          <tr><td>CL</td><td>Childcare Leave</td></tr>
+          <tr><td>PL</td><td>Paternity Leave</td></tr>
+          <tr><td>HSP</td><td>Hospitalisation Leave</td></tr>
+        </table>
+      </div>
+      <div>
+        <table class="lf-summary-table">
+          <tr><td>AL Earned</td><td>${summary.annual.earned}</td></tr>
+          <tr><td>AL Taken</td><td>${summary.annual.taken}</td></tr>
+          <tr><td>AL Applied</td><td>${summary.annual.applied}</td></tr>
+          <tr><td>AL Balance</td><td>${summary.annual.balance}</td></tr>
+          <tr><td>MC Earned</td><td>${summary.medical.earned}</td></tr>
+          <tr><td>MC Taken</td><td>${summary.medical.taken}</td></tr>
+          <tr><td>MC Applied</td><td>${summary.medical.applied}</td></tr>
+          <tr><td>MC Balance</td><td>${summary.medical.balance}</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="lf-sign-block">
+      <div>
+        <div class="lf-caption">Applied By</div>
+        <div class="lf-field-row"><span class="lf-field-label">Staff's Signature:</span><span class="lf-line"></span></div>
+        <div class="lf-field-row"><span class="lf-field-label">Staff's Name:</span><span class="lf-line">${escapeHtml(staffName || "")}</span></div>
+        <div class="lf-field-row"><span class="lf-field-label">Date:</span><span class="lf-line"></span></div>
+      </div>
+      <div>
+        <div class="lf-caption">Approved by</div>
+        <div class="lf-field-row"><span class="lf-field-label">Supervisor's Signature:</span><span class="lf-line"></span></div>
+        <div class="lf-field-row"><span class="lf-field-label">Supervisor's Name:</span><span class="lf-line"></span></div>
+        <div class="lf-field-row"><span class="lf-field-label">Date:</span><span class="lf-line"></span></div>
+      </div>
+    </div>
+
+    <div class="lf-remarks">
+      <strong>Remarks</strong>
+      <div>After your leave has been approved, please apply the same in Infotech – Leave portal</div>
+      <div>For Medical Leave, please upload Medical Certificate in Infotech – Leave portal</div>
+      <div>For Medical Claim, please upload Medical Receipt in Infotech – Claims portal</div>
+    </div>
+
+    <div class="lf-footer">
+      DCI Consultants Pte Ltd<br>
+      25 International Business Park #02-35 German Centre Singapore 609915
+    </div>
+  </div>`;
+}

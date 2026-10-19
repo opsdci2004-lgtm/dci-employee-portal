@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Leave Monitoring | DCI Consultants Employee Portal</title>
-<meta name="description" content="Apply for leave, track your balance, and (for managers) approve requests and view the team calendar.">
+<title>Leave Application Form | DCI Consultants Employee Portal</title>
+<meta name="description" content="Fill in your leave details, print the official leave application form for manager sign-off, then log approved leave in Infotech.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
 <body>
 
 <div class="confidentiality-banner">
-  ⚠ Internal tool — use your real DCI email to sign in, but keep leave reasons brief and non-medical where possible. This site is on free public hosting; do not paste sensitive medical details or documents here.
+  ⚠ Nothing on this page is saved anywhere — it only fills in the form while this tab is open, purely so you can print it. Refreshing the page clears it. Do not enter detailed medical information; a brief reason is enough.
 </div>
 
 <header class="site-header">
@@ -42,9 +42,9 @@
 <section class="page-hero">
   <div class="container page-hero-grid">
     <div class="fade-up">
-      <span class="hero-eyebrow">Leave Monitoring</span>
-      <h1>Apply, track and approve leave in one place</h1>
-      <p class="lead">Pick your dates and we work out the working days for you, weekends and public holidays excluded. Managers get an approval queue and a team calendar to spot overlaps before approving.</p>
+      <span class="hero-eyebrow">Leave Application</span>
+      <h1>Fill in, print, sign — then log it in Infotech</h1>
+      <p class="lead">Enter your leave details below and the official DCI Consultants leave form fills in automatically as you type, ready to print and take to your manager for sign-off. Once it's approved, apply the same leave in the Infotech Leave Portal.</p>
     </div>
     <div class="page-hero-media fade-up">
       <img
@@ -59,203 +59,90 @@
 <section class="section">
   <div class="container">
 
-    <!-- ===== Signed-out: sign in / sign up ===== -->
-    <div id="auth-wrap" class="auth-wrap">
-      <div class="auth-card">
-        <div class="auth-tabs" role="tablist">
-          <button id="tab-signin" type="button" role="tab" aria-selected="true">Sign in</button>
-          <button id="tab-signup" type="button" role="tab" aria-selected="false">Create account</button>
+    <!-- Step 1: staff details -->
+    <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
+      <span class="eyebrow">Step 1</span>
+      <h2>Your details</h2>
+    </div>
+    <div class="card" style="margin-bottom:28px;">
+      <div class="form-row">
+        <div class="field">
+          <label for="lf-name">Name of Staff</label>
+          <input type="text" id="lf-name" placeholder="Your full name">
         </div>
-
-        <p id="auth-msg" class="form-msg hidden"></p>
-
-        <form id="signin-form">
-          <div class="field">
-            <label for="signin-email">Work email</label>
-            <input type="email" id="signin-email" required autocomplete="email">
-          </div>
-          <div class="field">
-            <label for="signin-password">Password</label>
-            <input type="password" id="signin-password" required autocomplete="current-password">
-          </div>
-          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Sign in</button>
-        </form>
-
-        <form id="signup-form" class="hidden">
-          <div class="field">
-            <label for="signup-name">Full name</label>
-            <input type="text" id="signup-name" required autocomplete="name">
-          </div>
-          <div class="field">
-            <label for="signup-email">Work email</label>
-            <input type="email" id="signup-email" required autocomplete="email">
-          </div>
-          <div class="field">
-            <label for="signup-password">Password</label>
-            <input type="password" id="signup-password" required minlength="6" autocomplete="new-password">
-          </div>
-          <p class="form-hint">New accounts start as "employee". [PLACEHOLDER] Ask HR/IT to promote your account to "manager" if you approve leave for a team.</p>
-          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Create account</button>
-        </form>
+        <div class="field">
+          <label for="lf-department">Department</label>
+          <input type="text" id="lf-department" placeholder="e.g. Finance, IT, Projects">
+        </div>
+      </div>
+      <div class="field" style="max-width:260px;margin-bottom:0;">
+        <label for="lf-month">Leave applied for the month of</label>
+        <input type="month" id="lf-month">
       </div>
     </div>
 
-    <!-- ===== Signed-in app ===== -->
-    <div id="app-wrap" class="hidden">
-
-      <div class="leave-topbar">
-        <div class="leave-whoami">
-          <div class="leave-avatar" id="topbar-avatar">?</div>
-          <div>
-            <div style="font-weight:700;" id="topbar-name">—</div>
-            <span class="role-pill" id="topbar-role">employee</span>
-          </div>
-        </div>
-        <button id="signout-btn" class="btn btn-outline btn-sm">Sign out</button>
-      </div>
-
-      <!-- My details (needed on the printed leave form) -->
-      <form id="details-form" class="card" style="margin-bottom:28px;">
-        <h3 style="margin-bottom:14px;">My details</h3>
-        <div class="form-row">
-          <div class="field">
-            <label for="details-name">Full name</label>
-            <input type="text" id="details-name">
-          </div>
-          <div class="field">
-            <label for="details-department">Department</label>
-            <input type="text" id="details-department" placeholder="e.g. Finance, IT, Projects">
-          </div>
-        </div>
-        <button type="submit" class="btn btn-outline btn-sm">Save details</button>
-        <span id="details-msg" style="margin-left:10px;font-size:0.85rem;"></span>
-      </form>
-
-      <!-- Balance cards -->
-      <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
-        <span class="eyebrow">My balance</span>
-        <h2>Leave balance</h2>
-      </div>
-      <div class="balance-grid" id="balance-grid">
-        <p>Loading balances...</p>
-      </div>
-
-      <!-- Apply for leave -->
-      <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
-        <span class="eyebrow">New request</span>
-        <h2>Apply for leave</h2>
-      </div>
-      <form id="apply-form" class="card" style="margin-bottom:36px;">
-        <p id="apply-msg" class="form-msg hidden"></p>
+    <!-- Step 2: entitlement (manual, no database behind this) -->
+    <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
+      <span class="eyebrow">Step 2</span>
+      <h2>Your current leave balance</h2>
+      <p style="text-align:left;">Enter what's on your last payslip or HR record — there's no database behind this form, so these numbers aren't looked up automatically.</p>
+    </div>
+    <div class="card" style="margin-bottom:28px;">
+      <div class="form-row">
         <div class="field">
-          <label for="leave-type">Leave type</label>
-          <select id="leave-type">
-            <option value="annual">Annual Leave</option>
-            <option value="medical">Medical Leave</option>
-            <option value="unpaid">Unpaid Leave</option>
-          </select>
+          <label for="lf-al-earned">Annual Leave earned (days/year)</label>
+          <input type="number" id="lf-al-earned" value="14" min="0" step="0.5">
         </div>
-        <div class="form-row">
-          <div class="field">
-            <label for="leave-start">Start date</label>
-            <input type="date" id="leave-start" required>
-          </div>
-          <div class="field">
-            <label for="leave-end">End date</label>
-            <input type="date" id="leave-end" required>
-          </div>
-        </div>
-        <div class="field" id="half-day-field" style="display:none;">
-          <label style="display:flex;align-items:center;gap:8px;font-weight:600;">
-            <input type="checkbox" id="leave-half-day" style="width:auto;">
-            Half day only (same-day leave)
-          </label>
-          <select id="leave-half-period" style="margin-top:8px;display:none;">
-            <option value="AM">Morning (08:30–12:00)</option>
-            <option value="PM">Afternoon (13:30–18:00)</option>
-          </select>
-        </div>
-        <p class="form-hint" id="working-days-preview"></p>
         <div class="field">
-          <label for="leave-reason">Reason</label>
-          <textarea id="leave-reason" required placeholder="Short reason for your manager..."></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit request</button>
-      </form>
-
-      <!-- My requests -->
-      <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
-        <span class="eyebrow">History</span>
-        <h2>My requests</h2>
-      </div>
-      <div class="request-list" id="request-list"></div>
-      <div class="empty-state" id="request-empty">
-        <p>You haven't submitted any leave requests yet.</p>
-      </div>
-
-      <!-- Printable Leave Application Form -->
-      <div class="section-head fade-up" style="text-align:left;margin:40px 0 20px;max-width:none;">
-        <span class="eyebrow">For signing</span>
-        <h2>Print leave application form</h2>
-        <p style="text-align:left;">Pick a month — we'll fill in the official DCI Consultants leave application form with your requests for that month, ready to print and sign.</p>
-      </div>
-      <div class="card" style="margin-bottom:36px;">
-        <div class="form-row" style="align-items:flex-end;">
-          <div class="field" style="margin-bottom:0;">
-            <label for="form-month">Month</label>
-            <input type="month" id="form-month">
-          </div>
-          <button type="button" id="generate-form-btn" class="btn btn-primary" style="height:42px;">Generate form</button>
-        </div>
-        <p class="form-hint" id="form-gen-msg" style="margin-top:12px;"></p>
-      </div>
-
-      <div id="leave-form-wrap" class="hidden">
-        <div class="no-print" style="display:flex;gap:10px;margin-bottom:16px;">
-          <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">🖨 Print / Save as PDF</button>
-          <button type="button" class="btn btn-outline btn-sm" id="close-form-btn">Close</button>
-        </div>
-        <div id="leaveFormPrint"></div>
-      </div>
-
-      <!-- Manager-only: approval queue + team calendar -->
-      <div id="manager-section" class="hidden">
-        <div class="section-head fade-up" style="text-align:left;margin:40px 0 20px;max-width:none;">
-          <span class="eyebrow">Manager view</span>
-          <h2>Approval queue</h2>
-        </div>
-        <div class="queue-list" id="queue-list"></div>
-        <div class="empty-state" id="queue-empty">
-          <p>No pending requests right now.</p>
-        </div>
-
-        <div class="section-head fade-up" style="text-align:left;margin:40px 0 20px;max-width:none;">
-          <span class="eyebrow">Plan around the team</span>
-          <h2>Team calendar</h2>
-          <p style="text-align:left;">Approved leave is solid, pending requests are shown with a dashed border, so you can spot overlaps before approving.</p>
-        </div>
-        <div class="calendar-toolbar">
-          <h3 id="calendar-label">—</h3>
-          <div class="calendar-nav">
-            <button id="cal-prev" type="button" aria-label="Previous month">←</button>
-            <button id="cal-next" type="button" aria-label="Next month">→</button>
-          </div>
-        </div>
-        <div class="calendar-grid" id="calendar-grid"></div>
-        <div class="calendar-legend">
-          <span><span class="legend-dot" style="background:var(--color-primary);"></span>Annual</span>
-          <span><span class="legend-dot" style="background:#e05d5d;"></span>Medical</span>
-          <span><span class="legend-dot" style="background:#8a8f9c;"></span>Unpaid</span>
-          <span><span class="legend-dot" style="background:var(--color-primary);border:1px dashed #fff;"></span>Dashed = pending</span>
+          <label for="lf-al-taken">Annual Leave already taken this year</label>
+          <input type="number" id="lf-al-taken" value="0" min="0" step="0.5">
         </div>
       </div>
+      <div class="form-row" style="margin-bottom:0;">
+        <div class="field" style="margin-bottom:0;">
+          <label for="lf-mc-earned">Medical Leave earned (days/year)</label>
+          <input type="number" id="lf-mc-earned" value="14" min="0" step="0.5">
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label for="lf-mc-taken">Medical Leave already taken this year</label>
+          <input type="number" id="lf-mc-taken" value="0" min="0" step="0.5">
+        </div>
+      </div>
+    </div>
 
+    <!-- Step 3: leave rows -->
+    <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
+      <span class="eyebrow">Step 3</span>
+      <h2>Leave dates</h2>
+      <p style="text-align:left;">Add one row per block of leave. Working days are calculated automatically, excluding weekends and Singapore public holidays.</p>
+    </div>
+    <div id="rows-editor"></div>
+    <button type="button" id="add-row-btn" class="btn btn-outline" style="margin:14px 0 36px;">+ Add leave row</button>
+
+    <!-- Printable form preview -->
+    <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
+      <span class="eyebrow">Step 4</span>
+      <h2>Print &amp; sign</h2>
+      <p style="text-align:left;">The form below updates live as you fill in the steps above.</p>
+    </div>
+    <div class="no-print" style="margin-bottom:16px;">
+      <button type="button" class="btn btn-primary" onclick="window.print()">🖨 Print / Save as PDF</button>
+    </div>
+    <div id="leaveFormPrint" style="margin-bottom:40px;"></div>
+
+    <!-- After approval: Infotech link -->
+    <div class="help-strip fade-up no-print">
+      <div>
+        <h2>Leave approved?</h2>
+        <p>Once your manager has signed this form, log the same leave in the Infotech Leave Management System.</p>
+      </div>
+      <a class="btn btn-outline" href="https://login-infotech.com/Login?rUrl=https%3a%2f%2fwww.infotech-cloudhr.com.sg%2fLoginV2.aspx" target="_blank" rel="noopener noreferrer">Open Infotech Leave Portal →</a>
     </div>
 
   </div>
 </section>
 
-<footer class="site-footer">
+<footer class="site-footer no-print">
   <div class="container footer-grid">
     <div class="footer-brand">
       <h3>DCI Consultants</h3>
@@ -285,9 +172,7 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="js/leave-config.js"></script>
-<script src="js/leave.js"></script>
+<script src="js/leave-form.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
