@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Claim Form | DCI Consultants Employee Portal</title>
+<meta name="description" content="Fill in your expense/mileage claim details, print the official claim form for manager sign-off, then log approved claims in Infotech.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+
+<header class="site-header">
+  <div class="container nav-wrap">
+    <a class="brand" href="index.html">
+      <img src="assets/images/dci-logo.png" alt="DCI Consultants" class="brand-logo">
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="templates.html">Templates</a>
+      <a href="policies.html">Policies</a>
+      <a href="guides.html">User Guides</a>
+      <a href="leave.html">Leave</a>
+      <a href="claim.html" aria-current="page">Claim</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" type="button" aria-label="Toggle dark mode">🌙</button>
+      <button class="hamburger" type="button" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container page-hero-grid">
+    <div class="fade-up">
+      <span class="hero-eyebrow">Expense Claim</span>
+      <h1>Fill in, print, sign — then log it in Infotech</h1>
+      <p class="lead">Enter your trip/expense details below and the official DCI Consultants claim form fills in automatically as you type, ready to print and take to your supervisor for sign-off. Once it's approved, apply the same claim in the Infotech Claims Portal and upload your receipts.</p>
+    </div>
+    <div class="page-hero-media fade-up">
+      <img
+        src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=900&q=80"
+        alt="Receipts and a calculator representing an expense claim"
+        loading="lazy"
+        onerror="handleImgError(this)">
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Step 1: staff details -->
+    <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
+      <span class="eyebrow">Step 1</span>
+      <h2>Your details</h2>
+    </div>
+    <div class="card" style="margin-bottom:28px;">
+      <div class="form-row">
+        <div class="field">
+          <label for="cf-name">Staff's Name</label>
+          <input type="text" id="cf-name" placeholder="Your full name">
+        </div>
+        <div class="field">
+          <label for="cf-site">Site</label>
+          <input type="text" id="cf-site" placeholder="Client site / office">
+        </div>
+      </div>
+      <div class="field" style="max-width:260px;margin-bottom:0;">
+        <label for="cf-period">Period (MM/YYYY)</label>
+        <input type="month" id="cf-period">
+      </div>
+    </div>
+
+    <!-- Step 2: claim rows -->
+    <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
+      <span class="eyebrow">Step 2</span>
+      <h2>Trips &amp; expenses</h2>
+      <p style="text-align:left;">Add one row per trip or expense. If you enter a mileage, we'll suggest an amount at DCI's official rate of S$0.25/km — you can still edit it. Keep your original receipts for anything that isn't a mileage claim.</p>
+    </div>
+    <div id="rows-editor"></div>
+    <button type="button" id="add-row-btn" class="btn btn-outline" style="margin:14px 0 10px;">+ Add claim row</button>
+    <p class="form-hint" id="claim-total" style="margin:0 0 36px;font-weight:600;"></p>
+
+    <!-- Printable form preview -->
+    <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
+      <span class="eyebrow">Step 3</span>
+      <h2>Print &amp; sign</h2>
+      <p style="text-align:left;">The form below updates live as you fill in the steps above.</p>
+    </div>
+    <div class="no-print" style="margin-bottom:16px;">
+      <button type="button" class="btn btn-primary" onclick="window.print()">🖨 Print / Save as PDF</button>
+    </div>
+    <div id="claimFormPrint" style="margin-bottom:40px;"></div>
+
+    <!-- After approval: Infotech link -->
+    <div class="help-strip fade-up no-print">
+      <div>
+        <h2>Claim approved?</h2>
+        <p>Once your supervisor has signed this form, log the same claim in the Infotech Claims Portal and upload your receipts.</p>
+      </div>
+      <a class="btn btn-outline" href="https://login-infotech.com/Login?rUrl=https%3a%2f%2fwww.infotech-cloudhr.com.sg%2fLoginV2.aspx" target="_blank" rel="noopener noreferrer">Open Infotech Claims Portal →</a>
+    </div>
+
+    <div class="no-print" style="margin-top:28px;text-align:center;">
+      <p style="color:var(--color-text-muted);font-size:0.9rem;">Claiming car/motorcycle mileage at the capped monthly rate? Use the <a href="templates.html">Monthly Mileage Claim Form</a> on the Templates page instead.</p>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer no-print">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <h3>DCI Consultants</h3>
+      <p>Internal employee portal for contract staff: templates, policies and guides in one place.<br>DCI Consultants Pte Ltd, No 25 International Business Park, #02-53, Singapore 609916 (UEN 200409374R).</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="templates.html">Templates</a></li>
+        <li><a href="policies.html">Policies</a></li>
+        <li><a href="guides.html">User Guides</a></li>
+        <li><a href="leave.html">Leave</a></li>
+        <li><a href="claim.html">Claim</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:sale@dci-consultants.com">sale@dci-consultants.com</a></li>
+        <li>Ms Ong Bee Hoon: 9176 8147 / 9879 8085</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom container">
+    &copy; 2026 DCI Consultants. For internal reference only — no confidential data.
+  </div>
+</footer>
+
+<script src="js/claim-form.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -827,8 +827,8 @@ summary:focus-visible {
 
 @media print {
   body * { visibility: hidden; }
-  #leaveFormPrint, #leaveFormPrint * { visibility: visible; }
-  #leaveFormPrint {
+  #leaveFormPrint, #leaveFormPrint *, #claimFormPrint, #claimFormPrint * { visibility: visible; }
+  #leaveFormPrint, #claimFormPrint {
     position: absolute;
     top: 0;
     left: 0;
