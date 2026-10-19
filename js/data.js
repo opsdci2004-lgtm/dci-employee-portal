@@ -228,6 +228,18 @@ const GUIDES = [
       "Project-specific questions → your assigned Project Lead or Manager."
     ],
     tip: "Save these contacts to your phone during your first week so help is always within reach."
+  },
+  {
+    id: "infotech-leave-guide",
+    title: "Infotech Leave System User Guide",
+    steps: [
+      "Log in to Infotech HRMS using your company credentials.",
+      "On any page, look for the <strong>?</strong> (question mark) Help button near the top of the screen.",
+      "Click it to open the Infotech Help Portal (\"Hello. How can we help you?\").",
+      "Use the search bar — or the topic dropdown — to search articles, topics or keywords, including leave management, applying for leave, and leave balances.",
+      "Browse the \"Highest Rated Articles\" section for commonly needed how-tos, or search directly for the leave topic you need."
+    ],
+    tip: "Infotech's own Help Portal is kept up to date directly by Infotech, so it's the most current source for exact, step-by-step leave-module instructions. If you still can't find what you need, ask your DCI reporting manager or HR contact."
   }
 ];
 
