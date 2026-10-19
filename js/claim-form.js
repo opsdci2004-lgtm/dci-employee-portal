@@ -9,6 +9,7 @@
    ===================================================== */
 
 const MILEAGE_RATE = 0.25; // S$ per km, DCI's official car/motorcycle rate
+const MILEAGE_TAXI_CAP = 250; // S$ per employee per month, mileage + taxi claims combined
 
 let claimRows = [];
 let claimRowSeq = 0;
@@ -40,6 +41,7 @@ function addClaimRow() {
   claimRowSeq++;
   const row = {
     id: claimRowSeq,
+    category: "mileage",
     date: "",
     from: "",
     to: "",
@@ -69,6 +71,12 @@ function handleClaimFieldChange(e) {
   if (!row) return;
 
   row[field] = el.value;
+
+  if (field === "category") {
+    const mileageField = document.querySelector(`[data-mileage-wrap-for="${id}"]`);
+    if (mileageField) mileageField.style.display = row.category === "mileage" ? "block" : "none";
+    if (row.category !== "mileage") row.mileageKm = "";
+  }
 
   if (field === "mileageKm") {
     const km = Number(row.mileageKm);
@@ -100,13 +108,21 @@ function claimRowCardHtml(row) {
       <div class="leave-row-card" data-row="${row.id}">
         <div class="form-row">
           <div class="field" style="margin-bottom:10px;">
+            <label>Category</label>
+            <select data-field="category" data-row="${row.id}">
+              <option value="mileage" ${row.category === "mileage" ? "selected" : ""}>Mileage (car/motorcycle)</option>
+              <option value="taxi" ${row.category === "taxi" ? "selected" : ""}>Taxi / ride-hail</option>
+              <option value="other" ${row.category === "other" ? "selected" : ""}>Other expense</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:10px;">
             <label>Date</label>
             <input type="date" data-field="date" data-row="${row.id}" value="${row.date}">
           </div>
-          <div class="field" style="margin-bottom:10px;">
-            <label>Purpose of Trip</label>
-            <input type="text" data-field="purpose" data-row="${row.id}" value="${escapeAttrClaim(row.purpose)}" placeholder="e.g. Client site visit">
-          </div>
+        </div>
+        <div class="field" style="margin-bottom:10px;">
+          <label>Purpose of Trip</label>
+          <input type="text" data-field="purpose" data-row="${row.id}" value="${escapeAttrClaim(row.purpose)}" placeholder="e.g. Client site visit">
         </div>
         <div class="form-row">
           <div class="field" style="margin-bottom:10px;">
@@ -119,7 +135,7 @@ function claimRowCardHtml(row) {
           </div>
         </div>
         <div class="form-row">
-          <div class="field" style="margin-bottom:4px;">
+          <div class="field" data-mileage-wrap-for="${row.id}" style="margin-bottom:4px;display:${row.category === "mileage" ? "block" : "none"};">
             <label>Mileage (km)</label>
             <input type="number" min="0" step="0.1" data-field="mileageKm" data-row="${row.id}" value="${row.mileageKm}">
             <span class="form-hint" data-mileage-hint-for="${row.id}" style="margin:4px 0 0;"></span>
@@ -148,17 +164,29 @@ function renderClaimPreview() {
 
   const printRows = claimRows.filter((r) => r.date || r.from || r.to || r.purpose || r.mileageKm || r.amount);
   const total = printRows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+  const mileageTaxiTotal = printRows
+    .filter((r) => r.category === "mileage" || r.category === "taxi")
+    .reduce((s, r) => s + (Number(r.amount) || 0), 0);
 
-  document.getElementById("claim-total").textContent = printRows.length
-    ? `Running total: S$${total.toFixed(2)}`
-    : "";
+  const totalEl = document.getElementById("claim-total");
+  if (!printRows.length) {
+    totalEl.innerHTML = "";
+  } else {
+    const overCap = mileageTaxiTotal > MILEAGE_TAXI_CAP;
+    totalEl.innerHTML =
+      `Running total: S$${total.toFixed(2)}` +
+      ` &nbsp;·&nbsp; Mileage + taxi this period: ` +
+      `<span style="color:${overCap ? "#a4241c" : "inherit"};">S$${mileageTaxiTotal.toFixed(2)} of S$${MILEAGE_TAXI_CAP.toFixed(2)} cap</span>` +
+      (overCap ? " ⚠ over the monthly cap — the excess may not be reimbursed" : "");
+  }
 
   document.getElementById("claimFormPrint").innerHTML = buildClaimFormHtml({
     staffName,
     site,
     periodLabel,
     rows: printRows,
-    total
+    total,
+    mileageTaxiTotal
   });
 }
 
@@ -179,18 +207,23 @@ function formatClaimDate(iso) {
   return `${d.getDate()}-${months[d.getMonth()]}-${String(d.getFullYear()).slice(-2)}`;
 }
 
-function buildClaimFormHtml({ staffName, site, periodLabel, rows, total }) {
+function buildClaimFormHtml({ staffName, site, periodLabel, rows, total, mileageTaxiTotal }) {
+  const categoryTag = { mileage: "Mileage", taxi: "Taxi" };
   const tableRows = rows
-    .map((r) => `
+    .map((r) => {
+      const tag = categoryTag[r.category] ? `[${categoryTag[r.category]}] ` : "";
+      return `
       <tr>
         <td class="lf-num">${formatClaimDate(r.date)}</td>
         <td>${escapeHtmlClaim(r.from)}</td>
         <td>${escapeHtmlClaim(r.to)}</td>
-        <td>${escapeHtmlClaim(r.purpose)}</td>
+        <td>${tag}${escapeHtmlClaim(r.purpose)}</td>
         <td class="lf-num">${r.mileageKm || ""}</td>
         <td class="lf-num">${r.amount ? Number(r.amount).toFixed(2) : ""}</td>
-      </tr>`)
+      </tr>`;
+    })
     .join("");
+  const overCap = (mileageTaxiTotal || 0) > MILEAGE_TAXI_CAP;
 
   const blankRows = Array.from({ length: Math.max(0, 10 - rows.length) })
     .map(() => `<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>`)
@@ -228,6 +261,7 @@ function buildClaimFormHtml({ staffName, site, periodLabel, rows, total }) {
     </table>
 
     <p style="font-size:12px;">I declared that I have incurred the above expenses on behalf of the Company.</p>
+    <p style="font-size:12px;${overCap ? " color:#a4241c; font-weight:bold;" : ""}">Mileage + taxi claims this period: S$${(mileageTaxiTotal || 0).toFixed(2)} of the S$${MILEAGE_TAXI_CAP.toFixed(2)} monthly cap.${overCap ? " This exceeds the cap — the excess may not be reimbursed." : ""}</p>
 
     <div class="lf-sign-block">
       <div>
