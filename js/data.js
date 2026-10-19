@@ -107,7 +107,7 @@ const POLICIES = [
     body: [
       "Leave requests must be submitted at least 3 business days in advance using the Leave Application Form on the Templates page, except for emergency or sick leave.",
       "Unplanned absences must be reported to your direct manager before 9:00 AM local time.",
-      "[PLACEHOLDER] Confirm entitlement days per contract type (short-term vs long-term contractors)."
+      "Entitlement days can vary by contract type (short-term vs long-term contractors) — contact sale@dci-consultants.com or Ms Ong Bee Hoon (9176 8147 / 9879 8085) for your specific terms."
     ]
   },
   {
@@ -124,7 +124,7 @@ const POLICIES = [
       "<strong>Medical &amp; hospitalisation leave</strong> scales with length of service: 5 days outpatient / 15 days total at 3 months' service, rising to 14 days outpatient / 60 days total (inclusive of hospitalisation, not on top of it) from 6 months onward. A medical certificate from a registered doctor or dentist is required for any paid sick leave; notify your manager or HR within 48 hours of the absence. A false MC is a disciplinary matter.",
       "<strong>Applying:</strong> submit the leave form to your manager and HR with supporting proof (MC, call-up notice or expected delivery date). Your manager confirms cover arrangements within 3 working days, then HR checks eligibility/balance and confirms approval in writing. For parental leave, HR also files the government reimbursement claim.",
       "<strong>Quick answers:</strong> sick leave does not carry forward unless stated otherwise; parents may split SPL unevenly if both agree and register the change; NS leave does not reduce your annual leave balance.",
-      "[PLACEHOLDER] Before this guideline is finalised: confirm NS pay-claim rates/steps with MINDEF, confirm which sick leave rules apply to managers and executives with MOM, confirm the maternity pay reimbursement caps on the MSF/MOM sites, and have the final policy reviewed by legal/HR counsel.",
+      "Before this guideline is finalised, DCI still needs to confirm NS pay-claim rates/steps with MINDEF, which sick leave rules apply to managers and executives with MOM, and the maternity pay reimbursement caps with MSF/MOM, and have the final policy reviewed by legal/HR counsel.",
       "<a href=\"assets/docs/leave-policy-guideline-singapore.pdf\" download>📄 Download the full Leave Policy Guideline (PDF)</a>"
     ]
   },
@@ -136,7 +136,7 @@ const POLICIES = [
     summary: "When timesheets are due and how often contractors are paid.",
     body: [
       "Timesheets are due by 5:00 PM every Friday and must be approved by your project lead before payroll processing.",
-      "Payments are processed on a [PLACEHOLDER: weekly / bi-weekly / monthly] cycle, typically 5 business days after approval.",
+      "Payments are processed on a monthly cycle, typically 5 business days after approval.",
       "Late or unapproved timesheets may delay payment to the following cycle."
     ]
   },
@@ -173,7 +173,7 @@ const POLICIES = [
     body: [
       "Report any workplace hazard, injury or near-miss to your site supervisor or HR within 24 hours.",
       "Remote workers are responsible for maintaining a safe, ergonomic home workstation.",
-      "[PLACEHOLDER] Add local office emergency evacuation procedure and assembly point."
+      "Check your site noticeboard or ask your client site supervisor for the local emergency evacuation procedure and assembly point, since these vary by location."
     ]
   }
 ];
@@ -231,9 +231,8 @@ const GUIDES = [
     id: "who-to-contact",
     title: "Who to Contact for What",
     steps: [
-      "Payroll or payment issues → Finance Team, finance@[PLACEHOLDER-company-domain].com",
-      "Leave, contracts or workplace concerns → HR Team, hr@[PLACEHOLDER-company-domain].com",
-      "Laptop, access or software issues → IT Service Desk, itsupport@[PLACEHOLDER-company-domain].com",
+      "Payroll, leave, contracts, equipment or any other workplace question → sale@dci-consultants.com",
+      "Direct line → Ms Ong Bee Hoon, 9176 8147 / 9879 8085",
       "Project-specific questions → your assigned Project Lead or Manager."
     ],
     tip: "Save these contacts to your phone during your first week so help is always within reach."
@@ -275,7 +274,7 @@ const FAQS = [
   },
   {
     q: "Can I work from a location outside my usual city or country?",
-    a: "[PLACEHOLDER] Confirm remote-work and cross-border work policy with HR before making arrangements."
+    a: "Check with sale@dci-consultants.com before making remote-work or cross-border arrangements, since this depends on your contract and work-pass conditions."
   },
   {
     q: "How long does an IT equipment request take to process?",
