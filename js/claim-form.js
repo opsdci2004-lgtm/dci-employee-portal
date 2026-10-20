@@ -300,3 +300,46 @@ function buildClaimFormHtml({ staffName, site, supervisorName, periodLabel, rows
     </div>
   </div>`;
 }
+
+function validateAndPrintClaim() {
+  const errors = [];
+
+  if (!document.getElementById("cf-name").value.trim()) {
+    errors.push("Enter the staff's name.");
+  }
+  if (!document.getElementById("cf-site").value.trim()) {
+    errors.push("Enter the Client Company / Department.");
+  }
+  if (!document.getElementById("cf-period").value) {
+    errors.push("Select the claim period (MM/YYYY).");
+  }
+
+  const filledRows = claimRows.filter((r) => r.date || r.from || r.to || r.purpose || r.mileageKm || r.amount);
+  if (filledRows.length === 0) {
+    errors.push("Add at least one trip or expense row.");
+  }
+  filledRows.forEach((r, i) => {
+    const n = i + 1;
+    if (!r.date) {
+      errors.push(`Row ${n}: enter a date.`);
+    }
+    if (!r.amount || Number(r.amount) <= 0) {
+      errors.push(`Row ${n}: enter an amount greater than S$0.`);
+    }
+    if (r.category === "mileage" && (!r.mileageKm || Number(r.mileageKm) <= 0)) {
+      errors.push(`Row ${n}: enter the mileage (km) for this trip.`);
+    }
+  });
+
+  const box = document.getElementById("cf-validation");
+  if (errors.length) {
+    box.innerHTML = "<strong>Please fix the following before printing:</strong><ul style=\"margin:6px 0 0 18px;\">" +
+      errors.map((e) => `<li>${escapeHtmlClaim(e)}</li>`).join("") + "</ul>";
+    box.style.display = "block";
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  box.style.display = "none";
+  window.print();
+}

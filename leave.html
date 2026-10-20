@@ -129,7 +129,8 @@
       <p style="text-align:left;">The form below updates live as you fill in the steps above.</p>
     </div>
     <div class="no-print" style="margin-bottom:16px;">
-      <button type="button" class="btn btn-primary" onclick="window.print()">🖨 Print / Save as PDF</button>
+      <button type="button" class="btn btn-primary" onclick="validateAndPrintLeave()">🖨 Print / Save as PDF</button>
+      <div id="lf-validation" class="form-msg error no-print" style="display:none;margin-top:12px;"></div>
     </div>
     <div id="leaveFormPrint" style="margin-bottom:40px;"></div>
 

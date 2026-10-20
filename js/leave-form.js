@@ -394,3 +394,42 @@ function buildLeaveFormHtml({ staffName, department, supervisorName, monthLabel,
     </div>
   </div>`;
 }
+
+function validateAndPrintLeave() {
+  const errors = [];
+
+  if (!document.getElementById("lf-name").value.trim()) {
+    errors.push("Enter your name of staff.");
+  }
+  if (!document.getElementById("lf-department").value.trim()) {
+    errors.push("Enter your Client Company / Department.");
+  }
+  if (!document.getElementById("lf-month").value) {
+    errors.push("Select the month you're applying leave for.");
+  }
+
+  const filledRows = rows.filter((r) => r.startDate || r.endDate || r.reason);
+  if (filledRows.length === 0) {
+    errors.push("Add at least one leave row with a start and end date.");
+  }
+  filledRows.forEach((r, i) => {
+    const n = i + 1;
+    if (!r.startDate || !r.endDate) {
+      errors.push(`Leave row ${n}: enter both a start date and an end date.`);
+    } else if (r.endDate < r.startDate) {
+      errors.push(`Leave row ${n}: end date can't be before the start date.`);
+    }
+  });
+
+  const box = document.getElementById("lf-validation");
+  if (errors.length) {
+    box.innerHTML = "<strong>Please fix the following before printing:</strong><ul style=\"margin:6px 0 0 18px;\">" +
+      errors.map((e) => `<li>${escapeHtml(e)}</li>`).join("") + "</ul>";
+    box.style.display = "block";
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  box.style.display = "none";
+  window.print();
+}
