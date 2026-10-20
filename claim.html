@@ -57,10 +57,14 @@
   <div class="container">
 
     <!-- Step 1: staff details -->
-    <div class="section-head fade-up" style="text-align:left;margin:0 0 20px;max-width:none;">
-      <span class="eyebrow">Step 1</span>
-      <h2>Your details</h2>
+    <div class="section-head fade-up no-print" style="text-align:left;margin:0 0 20px;max-width:none;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div>
+        <span class="eyebrow">Step 1</span>
+        <h2>Your details</h2>
+      </div>
+      <button type="button" id="cf-clear-draft" class="btn btn-outline btn-sm" style="margin-bottom:4px;">Clear saved draft</button>
     </div>
+    <p class="no-print" style="text-align:left;color:var(--color-text-muted);font-size:0.85rem;margin:-14px 0 20px;">Your in-progress entries are autosaved in this browser only, so a refresh won't lose your work. Nothing is sent anywhere.</p>
     <div class="card" style="margin-bottom:28px;">
       <div class="form-row">
         <div class="field">

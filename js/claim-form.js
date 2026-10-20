@@ -3,9 +3,11 @@
    No login, no database — everything lives in the browser tab
    while you fill the form in, purely to populate a printable
    copy of the official "Approved Company Expense CLAIM FORM".
-   Nothing is saved; refreshing the page clears it. Once a
-   supervisor has signed the printed form, use the Infotech link
-   to log the approved claim.
+   Nothing leaves the browser: in-progress entries autosave to
+   localStorage on this device only (so a refresh doesn't lose
+   your work), with no server involved. Once a supervisor has
+   signed the printed form, use the Infotech link to log the
+   approved claim.
    ===================================================== */
 
 const MILEAGE_RATE = 0.25; // S$ per km, DCI's official car/motorcycle rate
@@ -14,9 +16,10 @@ const MILEAGE_TAXI_CAP = 250; // S$ per employee per month, mileage + taxi claim
 let claimRows = [];
 let claimRowSeq = 0;
 
-document.addEventListener("DOMContentLoaded", () => {
-  addClaimRow();
+const CLAIM_DRAFT_KEY = "dci-claim-draft";
+const CLAIM_FIELD_IDS = ["cf-name", "cf-site", "cf-supervisor", "cf-period"];
 
+document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("add-row-btn").addEventListener("click", () => addClaimRow());
 
   // One delegated listener on the container — row cards are created once
@@ -27,19 +30,26 @@ document.addEventListener("DOMContentLoaded", () => {
   rowsEditor.addEventListener("change", handleClaimFieldChange);
   rowsEditor.addEventListener("click", handleClaimRowClick);
 
-  ["cf-name", "cf-site", "cf-supervisor", "cf-period"].forEach((id) => {
+  CLAIM_FIELD_IDS.forEach((id) => {
     document.getElementById(id).addEventListener("input", renderClaimPreview);
   });
 
-  const now = new Date();
-  document.getElementById("cf-period").value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const clearBtn = document.getElementById("cf-clear-draft");
+  if (clearBtn) clearBtn.addEventListener("click", clearClaimDraft);
+
+  const restored = loadClaimDraft();
+  if (!restored) {
+    const now = new Date();
+    document.getElementById("cf-period").value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    addClaimRow();
+  }
 
   renderClaimPreview();
 });
 
-function addClaimRow() {
+function addClaimRow(initial) {
   claimRowSeq++;
-  const row = {
+  const row = Object.assign({
     id: claimRowSeq,
     category: "mileage",
     date: "",
@@ -49,9 +59,63 @@ function addClaimRow() {
     mileageKm: "",
     amount: "",
     amountManuallySet: false
-  };
+  }, initial || {}, { id: claimRowSeq });
   claimRows.push(row);
   document.getElementById("rows-editor").insertAdjacentHTML("beforeend", claimRowCardHtml(row));
+  renderClaimPreview();
+}
+
+function saveClaimDraft() {
+  try {
+    const fields = {};
+    CLAIM_FIELD_IDS.forEach((id) => {
+      fields[id] = document.getElementById(id).value;
+    });
+    localStorage.setItem(CLAIM_DRAFT_KEY, JSON.stringify({ fields, rows: claimRows }));
+  } catch (e) {
+    // Private browsing or storage disabled — autosave simply won't work this session.
+  }
+}
+
+function loadClaimDraft() {
+  let draft = null;
+  try {
+    const raw = localStorage.getItem(CLAIM_DRAFT_KEY);
+    if (raw) draft = JSON.parse(raw);
+  } catch (e) {
+    draft = null;
+  }
+  if (!draft || !draft.rows || !draft.rows.length) return false;
+
+  CLAIM_FIELD_IDS.forEach((id) => {
+    if (draft.fields && draft.fields[id] !== undefined) {
+      document.getElementById(id).value = draft.fields[id];
+    }
+  });
+
+  claimRows = [];
+  claimRowSeq = 0;
+  document.getElementById("rows-editor").innerHTML = "";
+  draft.rows.forEach((r) => addClaimRow(r));
+
+  return true;
+}
+
+function clearClaimDraft() {
+  try {
+    localStorage.removeItem(CLAIM_DRAFT_KEY);
+  } catch (e) {
+    // Ignore — nothing to clear if storage isn't available.
+  }
+  CLAIM_FIELD_IDS.forEach((id) => {
+    document.getElementById(id).value = "";
+  });
+  claimRows = [];
+  claimRowSeq = 0;
+  document.getElementById("rows-editor").innerHTML = "";
+  const now = new Date();
+  document.getElementById("cf-period").value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  addClaimRow();
   renderClaimPreview();
 }
 
@@ -196,6 +260,8 @@ function renderClaimPreview() {
     total,
     mileageTaxiTotal
   });
+
+  saveClaimDraft();
 }
 
 function escapeAttrClaim(str) {

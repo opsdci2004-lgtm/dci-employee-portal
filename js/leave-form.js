@@ -2,9 +2,11 @@
    DCI Consultants — Leave Application Form (data entry only)
    No login, no database — everything lives in the browser tab
    while you fill the form in, purely to populate a printable
-   copy of the official leave form. Nothing is saved; refreshing
-   the page clears it. Once a manager has signed the printed
-   form, use the Infotech link to log the approved leave.
+   copy of the official leave form. Nothing leaves the browser:
+   in-progress entries autosave to localStorage on this device only
+   (so a refresh doesn't lose your work), with no server involved.
+   Once a manager has signed the printed form, use the Infotech
+   link to log the approved leave.
    ===================================================== */
 
 const SG_PUBLIC_HOLIDAYS_2026 = new Set([
@@ -16,9 +18,10 @@ const SG_PUBLIC_HOLIDAYS_2026 = new Set([
 let rows = [];
 let rowSeq = 0;
 
-document.addEventListener("DOMContentLoaded", () => {
-  addRow();
+const LEAVE_DRAFT_KEY = "dci-leave-draft";
+const LEAVE_FIELD_IDS = ["lf-name", "lf-department", "lf-supervisor", "lf-month", "lf-al-earned", "lf-al-taken", "lf-mc-earned", "lf-mc-taken"];
 
+document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("add-row-btn").addEventListener("click", () => addRow());
 
   // One delegated listener on the container — row cards are created once
@@ -31,19 +34,26 @@ document.addEventListener("DOMContentLoaded", () => {
   rowsEditor.addEventListener("change", handleRowFieldChange);
   rowsEditor.addEventListener("click", handleRowClick);
 
-  ["lf-name", "lf-department", "lf-supervisor", "lf-month", "lf-al-earned", "lf-al-taken", "lf-mc-earned", "lf-mc-taken"].forEach((id) => {
+  LEAVE_FIELD_IDS.forEach((id) => {
     document.getElementById(id).addEventListener("input", renderPreview);
   });
 
-  const now = new Date();
-  document.getElementById("lf-month").value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const clearBtn = document.getElementById("lf-clear-draft");
+  if (clearBtn) clearBtn.addEventListener("click", clearLeaveDraft);
+
+  const restored = loadLeaveDraft();
+  if (!restored) {
+    const now = new Date();
+    document.getElementById("lf-month").value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    addRow();
+  }
 
   renderPreview();
 });
 
-function addRow() {
+function addRow(initial) {
   rowSeq++;
-  const row = {
+  const row = Object.assign({
     id: rowSeq,
     leaveType: "annual",
     startDate: "",
@@ -51,9 +61,65 @@ function addRow() {
     halfDay: false,
     halfPeriod: "AM",
     reason: ""
-  };
+  }, initial || {}, { id: rowSeq });
   rows.push(row);
   document.getElementById("rows-editor").insertAdjacentHTML("beforeend", rowCardHtml(row));
+  updateRowHalfVisibility(row);
+  updateRowDaysLabel(row);
+  renderPreview();
+}
+
+function saveLeaveDraft() {
+  try {
+    const fields = {};
+    LEAVE_FIELD_IDS.forEach((id) => {
+      fields[id] = document.getElementById(id).value;
+    });
+    localStorage.setItem(LEAVE_DRAFT_KEY, JSON.stringify({ fields, rows }));
+  } catch (e) {
+    // Private browsing or storage disabled — autosave simply won't work this session.
+  }
+}
+
+function loadLeaveDraft() {
+  let draft = null;
+  try {
+    const raw = localStorage.getItem(LEAVE_DRAFT_KEY);
+    if (raw) draft = JSON.parse(raw);
+  } catch (e) {
+    draft = null;
+  }
+  if (!draft || !draft.rows || !draft.rows.length) return false;
+
+  LEAVE_FIELD_IDS.forEach((id) => {
+    if (draft.fields && draft.fields[id] !== undefined) {
+      document.getElementById(id).value = draft.fields[id];
+    }
+  });
+
+  rows = [];
+  rowSeq = 0;
+  document.getElementById("rows-editor").innerHTML = "";
+  draft.rows.forEach((r) => addRow(r));
+
+  return true;
+}
+
+function clearLeaveDraft() {
+  try {
+    localStorage.removeItem(LEAVE_DRAFT_KEY);
+  } catch (e) {
+    // Ignore — nothing to clear if storage isn't available.
+  }
+  LEAVE_FIELD_IDS.forEach((id) => {
+    document.getElementById(id).value = "";
+  });
+  rows = [];
+  rowSeq = 0;
+  document.getElementById("rows-editor").innerHTML = "";
+  const now = new Date();
+  document.getElementById("lf-month").value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  addRow();
   renderPreview();
 }
 
@@ -238,6 +304,8 @@ function renderPreview() {
     rows: printRows,
     summary
   });
+
+  saveLeaveDraft();
 }
 
 function toISO(d) {

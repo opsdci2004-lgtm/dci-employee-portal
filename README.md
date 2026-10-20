@@ -92,8 +92,10 @@ To add a new item:
 
 This page has no login and no database — it's a data-entry form that
 fills in a live preview of DCI Consultants' official leave form as you
-type, purely so you can print it. Nothing is saved anywhere; refreshing
-the page clears it.
+type, purely so you can print it. Your in-progress entries autosave to
+`localStorage` in your own browser (so an accidental refresh doesn't
+lose your work) — nothing is sent to a server, and nothing is visible
+to anyone else. Use **Clear saved draft** to wipe it and start over.
 
 1. **Your details** — name, department, and the month leave is applied for.
 2. **Your current leave balance** — entered manually (Annual/Medical Leave
@@ -180,11 +182,13 @@ has no backend, database or login at all, so:
 - **Do not** attempt to "fake" a login or password screen with
   JavaScript — client-side checks like that are trivially bypassed and
   give a false sense of security.
-- The Leave and Claim pages keep nothing entered into them anywhere —
-  each only exists in the browser tab while filling in the form, to
-  populate a printout. Still, keep leave reasons brief and avoid detailed
-  medical information, since the printed page itself is a physical
-  document someone will carry around and hand to a manager.
+- The Leave and Claim pages send nothing to a server — entries only
+  autosave to `localStorage` in the staff member's own browser (so a
+  refresh doesn't lose their work), and only exist to populate a
+  printout. Still, keep leave reasons brief and avoid detailed medical
+  information, since the printed page itself is a physical document
+  someone will carry around and hand to a manager, and since autosaved
+  drafts persist on a shared/public computer until cleared.
 
 If real access control is needed later, consider one of these instead:
 - **Cloudflare Access** — put the whole site behind Cloudflare's
