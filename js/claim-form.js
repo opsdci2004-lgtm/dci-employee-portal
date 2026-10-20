@@ -47,7 +47,8 @@ function addClaimRow() {
     to: "",
     purpose: "",
     mileageKm: "",
-    amount: ""
+    amount: "",
+    amountManuallySet: false
   };
   claimRows.push(row);
   document.getElementById("rows-editor").insertAdjacentHTML("beforeend", claimRowCardHtml(row));
@@ -72,6 +73,10 @@ function handleClaimFieldChange(e) {
 
   row[field] = el.value;
 
+  if (field === "amount") {
+    row.amountManuallySet = true;
+  }
+
   if (field === "category") {
     const mileageField = document.querySelector(`[data-mileage-wrap-for="${id}"]`);
     if (mileageField) mileageField.style.display = row.category === "mileage" ? "block" : "none";
@@ -84,8 +89,9 @@ function handleClaimFieldChange(e) {
     if (km > 0) {
       const suggested = Math.round(km * MILEAGE_RATE * 100) / 100;
       if (hint) hint.textContent = `Suggested at S$${MILEAGE_RATE.toFixed(2)}/km: S$${suggested.toFixed(2)}`;
-      // Only auto-fill amount if the staff hasn't typed one in yet.
-      if (!row.amount) {
+      // Keep auto-filling the amount as the distance changes, unless the
+      // staff has manually typed their own figure into the amount field.
+      if (!row.amountManuallySet) {
         row.amount = String(suggested);
         const amountInput = document.querySelector(`[data-field="amount"][data-row="${id}"]`);
         if (amountInput) amountInput.value = row.amount;
